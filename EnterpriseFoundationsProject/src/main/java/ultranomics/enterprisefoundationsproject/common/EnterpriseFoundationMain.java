@@ -12,8 +12,8 @@ public class EnterpriseFoundationMain {
         
         Tomcat webServer = new Tomcat();
         webServer.setBaseDir(docBase);
-        webServer.setPort(5000);
-        webServer.getConnector();
+        webServer.setPort(5000); //default is 8080
+        webServer.getConnector(); //formality, connects server requests to application
         
         
         final String rootContext = "/p1";
@@ -23,6 +23,7 @@ public class EnterpriseFoundationMain {
         
         webServer.start();
         webServer.getServer().await();
+        System.out.println("Web application started successfully");
         
         
         

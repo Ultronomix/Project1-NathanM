@@ -1,5 +1,7 @@
 application.properties
 
+logs/
+
 # Compiled class file
 *.class
 
