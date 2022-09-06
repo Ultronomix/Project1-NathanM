@@ -1,6 +1,6 @@
 package ultranomics.enterprisefoundationsproject.common.datamodels;
 
-public class users {
+public class User {
     private String userID;
     private String username;
     private String email;

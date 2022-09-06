@@ -1,6 +1,6 @@
 package ultranomics.enterprisefoundationsproject.common.datamodels;
 
-public class types {
+public class Type {
     private String typeID;
     private String type;
 

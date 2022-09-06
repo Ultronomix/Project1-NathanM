@@ -1,6 +1,6 @@
 package ultranomics.enterprisefoundationsproject.common.datamodels;
 
-public class statuses {
+public class Status {
     private String statusID;
     private String status;
 

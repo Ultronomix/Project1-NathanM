@@ -1,6 +1,6 @@
 package ultranomics.enterprisefoundationsproject.common.datamodels;
 
-public class reimbursements {
+public class Reimbursement {
     private String reimbID;
     private double amount;
     private String timeSub;

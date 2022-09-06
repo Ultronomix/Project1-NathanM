@@ -1,6 +1,6 @@
 package ultranomics.enterprisefoundationsproject.common.datamodels;
 
-public class roles {
+public class Role {
     private String roleID;
     private String role;
 
