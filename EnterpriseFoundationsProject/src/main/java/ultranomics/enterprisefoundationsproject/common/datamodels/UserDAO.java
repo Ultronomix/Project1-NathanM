@@ -1,9 +1,14 @@
 package ultranomics.enterprisefoundationsproject.common.datamodels;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import ultranomics.enterprisefoundationsproject.common.datasource.ConnectionFactory;
@@ -58,4 +63,15 @@ public class UserDAO {
     }
     
     //TODO add Logging method
+    public void log(String level, String message){
+        try{
+            File logFile = new File("logs/app.log");
+            logFile.createNewFile();
+            BufferedWriter logWriter = new BufferedWriter(new FileWriter(logFile));
+            logWriter.write(String.format("[%s] at %s logged: [%s] %s\n", 
+                    Thread.currentThread().getName(), LocalDate.now(), level.toUpperCase(), message));
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
+    }
 }
