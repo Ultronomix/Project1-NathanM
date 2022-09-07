@@ -8,7 +8,7 @@ public class User {
     private String givenName;
     private String surname;
     private boolean isActive;
-    private String roleID;
+    private String role;
 
     public String getUserID() {
         return userID;
@@ -66,11 +66,11 @@ public class User {
         this.isActive = isActive;
     }
 
-    public String getRoleID() {
-        return roleID;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoleID(String roleID) {
-        this.roleID = roleID;
+    public void setRole(String roleID) {
+        this.role = roleID;
     }
 }
