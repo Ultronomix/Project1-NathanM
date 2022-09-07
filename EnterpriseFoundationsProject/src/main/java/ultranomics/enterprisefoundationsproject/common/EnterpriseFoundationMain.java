@@ -26,21 +26,5 @@ public class EnterpriseFoundationMain {
         System.out.println("Web application started successfully");
         
         
-        
-//        System.out.println("Hello World!");
-//        
-//        ConnectionFactory connection = new ConnectionFactory();
-//        
-//        try{
-//            Connection conn = connection.getConnection();
-//            if(conn != null){
-//                System.out.println("Connection Established");
-//            }
-//            
-//            
-//        }catch(Exception e){
-//            System.err.println("Error: problem with the Database");
-//            e.printStackTrace();
-//        }
     }
 }
