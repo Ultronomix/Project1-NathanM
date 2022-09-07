@@ -1,4 +1,4 @@
-package ultranomics.enterprisefoundationsproject.common.datasource;
+package ultranomics.enterprisefoundationsproject.datasource;
 
 import java.io.FileReader;
 import java.io.IOException;

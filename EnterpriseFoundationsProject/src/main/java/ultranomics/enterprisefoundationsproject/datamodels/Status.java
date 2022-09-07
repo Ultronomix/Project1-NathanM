@@ -1,4 +1,4 @@
-package ultranomics.enterprisefoundationsproject.common.datamodels;
+package ultranomics.enterprisefoundationsproject.datamodels;
 
 public class Status {
     private String statusID;

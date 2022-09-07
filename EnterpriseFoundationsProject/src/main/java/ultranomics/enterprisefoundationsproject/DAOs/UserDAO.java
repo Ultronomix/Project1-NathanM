@@ -1,4 +1,4 @@
-package ultranomics.enterprisefoundationsproject.common.datamodels;
+package ultranomics.enterprisefoundationsproject.DAOs;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,7 +11,8 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import ultranomics.enterprisefoundationsproject.common.datasource.ConnectionFactory;
+import ultranomics.enterprisefoundationsproject.datamodels.User;
+import ultranomics.enterprisefoundationsproject.datasource.ConnectionFactory;
 
 public class UserDAO {
     private final String baseSelect = "SELECT EU.user_id, EU.username, EU.email, EU.given_name, EU.surname, EU.is_active, EUR.role " +
