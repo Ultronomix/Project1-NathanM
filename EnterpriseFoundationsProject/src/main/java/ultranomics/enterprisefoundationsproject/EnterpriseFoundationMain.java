@@ -17,13 +17,16 @@ public class EnterpriseFoundationMain {
         webServer.getConnector(); //formality, connects server requests to application
         
         UserDAO userDAO = new UserDAO();
-        UserService userServ = new UserService(userDAO);
         
+        //TODO add AuthService
+        UserService userServ = new UserService(userDAO);
+        //TODO add AuthServlet
+        UserServlet userSlet = new UserServlet(userServ);
         
         final String rootContext = "/p1";
         webServer.addContext(rootContext, docBase);
-        webServer.addServlet(rootContext, "UserServlet", new UserServlet()).addMapping("/users");
-        webServer.addServlet(rootContext, "ReimbursementServlet", new UserServlet()).addMapping("/reimbursements");
+        webServer.addServlet(rootContext, "UserServlet", userSlet).addMapping("/users");
+        //webServer.addServlet(rootContext, "ReimbursementServlet", new UserServlet()).addMapping("/reimbursements");
         
         
         webServer.start();
