@@ -1,11 +1,12 @@
 
 package ultranomics.enterprisefoundationsproject;
 
-import ultranomics.enterprisefoundationsproject.servlets.UserServlet;
-import org.apache.catalina.LifecycleException;
-import org.apache.catalina.startup.Tomcat;
 import ultranomics.enterprisefoundationsproject.DAOs.*;
 import ultranomics.enterprisefoundationsproject.services.*;
+import ultranomics.enterprisefoundationsproject.servlets.*;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.startup.Tomcat;
+
 
 public class EnterpriseFoundationMain {
     public static void main(String[] args) throws LifecycleException{
@@ -28,15 +29,18 @@ public class EnterpriseFoundationMain {
         ReimbursementService reimbServ = new ReimbursementService(reimbursementDAO);
         
         //Connecting Servlets to Service layer
-        //TODO add AuthServlet
         UserServlet userSlet = new UserServlet(userServ);
-        
+        RegistrationServlet regSlet = new RegistrationServlet(regServ);
+        AuthenticationServlet authSlet = new AuthenticationServlet(authServ);
+        ReimbursementServlet reimbSlet = new ReimbursementServlet(reimbServ);
         
         //Connecting Servlets to webServer
         final String rootContext = "/p1";
         webServer.addContext(rootContext, docBase);
         webServer.addServlet(rootContext, "UserServlet", userSlet).addMapping("/users");
-        //webServer.addServlet(rootContext, "ReimbursementServlet", new UserServlet()).addMapping("/reimbursements");
+        webServer.addServlet(rootContext, "RegistrationServlet", regSlet).addMapping("/registration");
+        webServer.addServlet(rootContext, "AuthenticationServlet", authSlet).addMapping("/authentication");
+        webServer.addServlet(rootContext, "ReimbursementServlet", reimbSlet).addMapping("/reimbursements");
         
         
         webServer.start();
