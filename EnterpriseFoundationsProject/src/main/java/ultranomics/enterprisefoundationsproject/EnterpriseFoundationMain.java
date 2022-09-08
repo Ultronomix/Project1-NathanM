@@ -46,7 +46,5 @@ public class EnterpriseFoundationMain {
         webServer.start();
         webServer.getServer().await();
         System.out.println("Web application started successfully");
-        
-        
     }
 }
