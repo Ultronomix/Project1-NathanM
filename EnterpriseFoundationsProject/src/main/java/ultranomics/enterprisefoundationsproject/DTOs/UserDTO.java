@@ -1,8 +1,9 @@
 package ultranomics.enterprisefoundationsproject.DTOs;
 
+import java.io.Serializable;
 import ultranomics.enterprisefoundationsproject.datamodels.User;
 
-public class UserDTO {
+public class UserDTO implements Serializable{
     
     private String userID;
     private String username;
