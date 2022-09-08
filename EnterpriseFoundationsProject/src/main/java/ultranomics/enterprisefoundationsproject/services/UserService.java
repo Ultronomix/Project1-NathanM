@@ -21,4 +21,8 @@ public class UserService {
         }
         return result;
     }
+
+    public UserDTO getUserByID(String idSubmission) {
+        //TODO impliment method
+    }
 }
