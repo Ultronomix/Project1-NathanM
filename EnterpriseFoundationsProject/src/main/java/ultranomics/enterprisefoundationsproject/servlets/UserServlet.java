@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
 import ultranomics.enterprisefoundationsproject.ErrorReport;
+import ultranomics.enterprisefoundationsproject.exceptionTemplates.*;
 import ultranomics.enterprisefoundationsproject.services.UserService;
 
 public class UserServlet extends HttpServlet{
