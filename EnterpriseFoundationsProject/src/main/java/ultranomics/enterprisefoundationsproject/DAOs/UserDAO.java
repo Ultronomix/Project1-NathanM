@@ -42,6 +42,8 @@ public class UserDAO {
          return allUsers;
     }
     
+    //might not need but not going to remove until sure 
+    //not currently used by Service Layer
     public Optional<User> findUserByID(String idImport){
         String sql = baseSelect + "WHERE EU.user_id = ?";
         
