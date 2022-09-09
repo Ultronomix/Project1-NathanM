@@ -5,14 +5,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import ultranomics.enterprisefoundationsproject.datamodels.User;
 import ultranomics.enterprisefoundationsproject.datasource.ConnectionFactory;
+import ultranomics.enterprisefoundationsproject.exceptionTemplates.DataSourceException;
 
 public class UserDAO {
     private final String baseSelect = "SELECT EU.user_id, EU.username, EU.email, EU.given_name, EU.surname, EU.is_active, EUR.role " +
@@ -36,11 +39,39 @@ public class UserDAO {
              e.printStackTrace();
          }
          
-         
          return allUsers;
     }
     
-    //TODO add individual Username/Password Lookup method
+    public Optional<User> findUserByID(String idImport){
+        String sql = baseSelect + "WHERE EU.user_id = ?";
+        
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, idImport);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+            
+        }catch(SQLException e){
+            e.printStackTrace();
+            throw new DataSourceException (e);
+        }
+    }
+    
+    public Optional<User> findUserByUsername(String username){
+        String sql = baseSelect + "WHERE EU.username = ?";
+        
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+            
+        }catch(SQLException e){
+            e.printStackTrace();
+            throw new DataSourceException (e);
+        }
+    }
+    
     //TODO add Save User method
 
     private List<User> mapResultSet(ResultSet rs) throws SQLException{
@@ -63,7 +94,7 @@ public class UserDAO {
         return users;
     }
     
-    //TODO add Logging method
+    //TODO update logging based on 9/9 lecture
     public void log(String level, String message){
         try{
             File logFile = new File("logs/app.log");
