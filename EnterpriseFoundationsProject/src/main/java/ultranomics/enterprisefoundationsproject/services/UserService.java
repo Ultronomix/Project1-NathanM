@@ -3,8 +3,11 @@ package ultranomics.enterprisefoundationsproject.services;
 import java.util.ArrayList;
 import java.util.List;
 import ultranomics.enterprisefoundationsproject.DAOs.UserDAO;
+import ultranomics.enterprisefoundationsproject.DTOs.ResourceCreationDTO;
 import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
+import ultranomics.enterprisefoundationsproject.datainsertion.NewUserInsertion;
 import ultranomics.enterprisefoundationsproject.datamodels.User;
+import ultranomics.enterprisefoundationsproject.exceptionTemplates.InvalidRequestException;
 
 public class UserService {
     private final UserDAO userDAO;
@@ -22,7 +25,20 @@ public class UserService {
         return result;
     }
 
-    public UserDTO getUserByID(String idSubmission) {
-        //TODO impliment method
+    public UserDTO getUserByUsername(String usernameImport) {
+        //filter invalid usernames
+        if(usernameImport == null || usernameImport.length() == 0){
+            throw new InvalidRequestException(
+                    "ERROR: submitted Username is null"+
+                    " or empty and can not be looked up");
+        }
+        
+        User target = userDAO.findUserByUsername(usernameImport).orElse(null); 
+        UserDTO result = new UserDTO(target);
+        return result;
+    }
+    
+    public ResourceCreationDTO register(NewUserInsertion newUser){
+        //TODO complete method
     }
 }
