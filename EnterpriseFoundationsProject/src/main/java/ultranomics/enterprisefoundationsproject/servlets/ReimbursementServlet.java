@@ -13,4 +13,6 @@ public class ReimbursementServlet extends HttpServlet{
 
     //TODO add doGet method
     //TODO add doPost method
+    //TODO add doPut method
+    //TODO add doDelete method
 }
