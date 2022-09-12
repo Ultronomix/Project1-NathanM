@@ -28,15 +28,15 @@ public class UserDAO {
          
          try(Connection conn =ConnectionFactory.getInstance().getConnection()){
              
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(baseSelect);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(baseSelect);
              
-             allUsers = mapResultSet(rs);
+            allUsers = mapResultSet(rs);
              
          }catch(SQLException e){
-             //TODO Log Exception
-             System.out.println("Error with ConnectionFactory");
-             e.printStackTrace();
+            //TODO Log Exception
+            System.out.println("Error with ConnectionFactory");
+            e.printStackTrace();
          }
          
          return allUsers;
@@ -69,12 +69,40 @@ public class UserDAO {
             return mapResultSet(rs).stream().findFirst();
             
         }catch(SQLException e){
+            //TODO Log Exception
             e.printStackTrace();
             throw new DataSourceException (e);
         }
     }
     
     //TODO add Save User method
+    
+    public Optional<User> deactivateUser(String username){
+        String sql = "UPDATE ers_users SET is_active = false WHERE username = ?";
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, username);
+            pstmt.executeUpdate();
+            
+            //prepping query to confirm update
+            sql = "SELECT EU.user_id, EU.username, EU.email, EU.given_name, EU.surname, EU.is_active, EUR.role " +
+                  "FROM ERS_USERS EU " +
+                  "JOIN ERS_USER_ROLES EUR " +
+                  "ON EU.role_id = EUR.role_id " +
+                  "WHERE EU.username = '?'";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+            
+        }catch(SQLException e){
+            //TODO Log Exception
+            e.printStackTrace();
+            throw new DataSourceException (e);
+        }
+        
+        
+    }//end deactivateUser method
 
     private List<User> mapResultSet(ResultSet rs) throws SQLException{
         List<User> users = new ArrayList<>();
@@ -105,6 +133,7 @@ public class UserDAO {
             logWriter.write(String.format("[%s] at %s logged: [%s] %s\n", 
                     Thread.currentThread().getName(), LocalDate.now(), level.toUpperCase(), message));
         }catch(IOException e){
+            //TODO Log Exception
             throw new RuntimeException(e);
         }
     }
