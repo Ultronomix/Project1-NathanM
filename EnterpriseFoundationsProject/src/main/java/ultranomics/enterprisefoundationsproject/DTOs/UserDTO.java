@@ -11,6 +11,7 @@ public class UserDTO implements Serializable{
     private String givenName;
     private String surname;
     private String role;
+    private String active;
     
     public UserDTO(User subject){
         this.userID = subject.getUserID();
@@ -69,6 +70,15 @@ public class UserDTO implements Serializable{
         this.role = role;
     }
     
+    public String getActive() {
+        return active;
+    }
+
+    public void setActive(String active) {
+        this.active = active;
+    }
+    
+    
     @Override
     public String toString() {
         return "UserDTO{"+
@@ -78,6 +88,7 @@ public class UserDTO implements Serializable{
                 ", givenName=" + givenName +'\''+ 
                 ", surname=" + surname +'\''+ 
                 ", role=" + role +'\''+ 
+                ", active=" + active +'\''+ 
                 '}';
     }
 }
