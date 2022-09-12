@@ -117,4 +117,8 @@ public class UserServlet extends HttpServlet{
 
         }
     }//end doPost method
+    
+    
+    //TODO add doPut method
+    //TODO add doDelete method
 }
