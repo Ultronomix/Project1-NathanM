@@ -41,4 +41,7 @@ public class UserService {
     public ResourceCreationDTO register(NewUserInsertion newUser){
         //TODO complete method
     }
+    
+    //TODO add updateUser method
+    //TODO add deactivateUser method
 }
