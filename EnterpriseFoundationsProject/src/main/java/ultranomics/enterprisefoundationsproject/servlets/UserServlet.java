@@ -30,7 +30,7 @@ public class UserServlet extends HttpServlet{
         this.userServ = importUserServ;
     }
     
-    //doGet:get all users, get single user by username
+    //doGet:get all users, get single user by username matching session ID
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectMapper jsonMapper = new ObjectMapper();
