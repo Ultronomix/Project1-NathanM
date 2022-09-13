@@ -111,7 +111,6 @@ public class UserServlet extends HttpServlet{
             resp.setStatus(400); // BAD REQUEST
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(400, e.getMessage())));
 
-        //TODO create custom ResourcePersistenceException
         } catch (ResourcePersistenceException e) {
             //TODO add logging based on 9/9 lecture
             resp.setStatus(409); // CONFLICT; indicates that the provided resource could not be saved without conflicting with other data
@@ -125,7 +124,53 @@ public class UserServlet extends HttpServlet{
         }
     }//end doPost method
     
+    //doPut:update existing user(require admin log in)
+    //TODO complete doPut method 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        ObjectMapper jsonMapper = new ObjectMapper();
+        resp.setContentType("application/json");
+        
+        
+    }
     
-    //TODO add doPut method (update an existing user)
-    //TODO add doDelete method (update an existing user to inactive)
+    //doDelete:update is_active to false(target by username)
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        ObjectMapper jsonMapper = new ObjectMapper();
+        resp.setContentType("application/json");
+        
+        //HTTPS session (might not exist)
+        HttpSession userSession = req.getSession(false);
+        
+        //Confirm user is logged in
+        if(userSession == null){
+            resp.setStatus(401);
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(401, "ERROR 401: Authorization Missing")));
+            return;
+        }
+        
+        //Gathering submitted username to be verified for authorization
+        String usernameSubmission = req.getParameter("username");
+        
+        //userSession set in AuthenticationServlet which sets "authUser" after someone has logged in
+        UserDTO requester = (UserDTO) userSession.getAttribute("authUser");
+        
+        //Username verification logic: must either have Role admin  
+        //or authUser must match the username of user requested
+        if(!requester.getRole().equals("admin") && !requester.getUsername().equals(usernameSubmission)){
+            resp.setStatus(403);
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, "ERROR 403: Authorization Insufficent to Access")));
+        }
+        
+        try{
+            UserDTO deactivatedUser = userServ.deactivate(usernameSubmission); 
+            //Translates deactivated UserDTO to json and sends to server to show active status as false
+            resp.getWriter().write(jsonMapper.writeValueAsString(deactivatedUser));
+        }catch(DataSourceException e){
+            //TODO add logging based on 9/9 lecture
+            resp.setStatus(500);
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));
+        }
+    }
 }

@@ -3,7 +3,6 @@ package ultranomics.enterprisefoundationsproject.services;
 import java.util.ArrayList;
 import java.util.List;
 import ultranomics.enterprisefoundationsproject.DAOs.UserDAO;
-import ultranomics.enterprisefoundationsproject.DTOs.ResourceCreationDTO;
 import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
 import ultranomics.enterprisefoundationsproject.datainsertion.NewUserInsertion;
 import ultranomics.enterprisefoundationsproject.datamodels.User;
@@ -26,7 +25,7 @@ public class UserService {
         return result;
     }
 
-    public UserDTO getUserByUsername(String usernameImport) {
+    public UserDTO getUserByUsername(String usernameImport) throws InvalidRequestException{
         //filter invalid usernames
         if(usernameImport == null || usernameImport.length() == 0){
             throw new InvalidRequestException(
@@ -39,7 +38,7 @@ public class UserService {
         return result;
     }
     
-    public UserDTO register(NewUserInsertion newUser){
+    public UserDTO register(NewUserInsertion newUser) throws InvalidRequestException, ResourcePersistenceException{
         //logic for checking first/last name, email, username, and password
         //are present and meet formatting requirements
         if(newUser == null){
@@ -75,5 +74,12 @@ public class UserService {
     }
     
     //TODO add updateUser method
+    
     //TODO add deactivateUser method
+    public UserDTO deactivate(String usernameImport){
+        User target = userDAO.deactivateUser(usernameImport).orElse(null);
+        UserDTO result = new UserDTO(target);
+        
+        return result;
+    }
 }
