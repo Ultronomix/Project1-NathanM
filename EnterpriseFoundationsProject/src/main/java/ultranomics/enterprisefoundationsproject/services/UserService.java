@@ -40,6 +40,7 @@ public class UserService {
     
     public ResourceCreationDTO register(NewUserInsertion newUser){
         //TODO complete method
+        //TODO add NewUser class to datamodels (will be passed to UserDAO)
     }
     
     //TODO add updateUser method
