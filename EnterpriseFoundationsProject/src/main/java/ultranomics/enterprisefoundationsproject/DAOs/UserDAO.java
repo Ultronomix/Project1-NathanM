@@ -57,14 +57,14 @@ public class UserDAO {
             e.printStackTrace();
             throw new DataSourceException (e);
         }
-    }
+    }//end findUserByID method
     
-    public Optional<User> findUserByUsername(String username){
+    public Optional<User> findUserByUsername(String usernameImport){
         String sql = baseSelect + "WHERE EU.username = ?";
         
         try(Connection conn = ConnectionFactory.getInstance().getConnection()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setObject(1, username);
+            pstmt.setObject(1, usernameImport);
             ResultSet rs = pstmt.executeQuery();
             return mapResultSet(rs).stream().findFirst();
             
@@ -73,15 +73,33 @@ public class UserDAO {
             e.printStackTrace();
             throw new DataSourceException (e);
         }
-    }
+    }//end findUserByUsername method
     
-    //TODO add Save User method
+    //TODO add saveUser method
     
-    public Optional<User> deactivateUser(String username){
+    public Optional<User> findUserByUsernameAndPassword(String usernameImport, String passwordImport){
+        String sql = baseSelect + "WHERE EU.username = ? AND WHERE EU.password = '?'";
+        
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, usernameImport);
+            pstmt.setObject(2, passwordImport);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+            
+        }catch(SQLException e){
+            //TODO Log Exception
+            e.printStackTrace();
+            throw new DataSourceException (e);
+        }
+    }//end findByUsernameAndPassword method
+    
+    
+    public Optional<User> deactivateUser(String usernameImport){
         String sql = "UPDATE ers_users SET is_active = false WHERE username = ?";
         try(Connection conn = ConnectionFactory.getInstance().getConnection()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setObject(1, username);
+            pstmt.setObject(1, usernameImport);
             pstmt.executeUpdate();
             
             //prepping query to confirm update
@@ -91,7 +109,7 @@ public class UserDAO {
                   "ON EU.role_id = EUR.role_id " +
                   "WHERE EU.username = '?'";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setObject(1, username);
+            pstmt.setObject(1, usernameImport);
             ResultSet rs = pstmt.executeQuery();
             return mapResultSet(rs).stream().findFirst();
             
