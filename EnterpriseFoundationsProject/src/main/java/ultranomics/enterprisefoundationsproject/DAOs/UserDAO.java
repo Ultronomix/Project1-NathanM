@@ -75,7 +75,23 @@ public class UserDAO {
         }
     }//end findUserByUsername method
     
-    //TODO add saveUser method
+    //TODO finish createUser method
+    public Optional<User> createUser(NewUser userImport){
+        String sql = "INSERT INTO ERS_USERS (username, email, password, given_name, surname, role_id) "+
+                "VALUES ('?', '?', '?', '?', '?', '?') ";
+        
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+        
+            
+            
+            //needs return
+        }catch(SQLException e){
+            //TODO add error log per 9/9
+        }
+    }//end of createUser method
+    
+    //TODO add isUsernameFree method
+    //TODO add isEmailFree method
     
     public Optional<User> findUserByUsernameAndPassword(String usernameImport, String passwordImport){
         String sql = baseSelect + "WHERE EU.username = ? AND WHERE EU.password = '?'";
@@ -93,7 +109,6 @@ public class UserDAO {
             throw new DataSourceException (e);
         }
     }//end findByUsernameAndPassword method
-    
     
     public Optional<User> deactivateUser(String usernameImport){
         String sql = "UPDATE ers_users SET is_active = false WHERE username = ?";
@@ -140,7 +155,7 @@ public class UserDAO {
         }
         
         return users;
-    }
+    }//end mapResultSet method
     
     //TODO update logging based on 9/9 lecture
     public void log(String level, String message){
