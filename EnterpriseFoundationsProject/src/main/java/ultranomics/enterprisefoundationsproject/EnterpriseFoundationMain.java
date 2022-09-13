@@ -24,13 +24,11 @@ public class EnterpriseFoundationMain {
         
         //Service methods
         UserService userServ = new UserService(userDAO);
-        RegistrationService regServ = new RegistrationService(userDAO);
         AuthenticationService authServ = new AuthenticationService(userDAO);
         ReimbursementService reimbServ = new ReimbursementService(reimbursementDAO);
         
         //Connecting Servlets to Service layer
         UserServlet userSlet = new UserServlet(userServ);
-        RegistrationServlet regSlet = new RegistrationServlet(regServ);
         AuthenticationServlet authSlet = new AuthenticationServlet(authServ);
         ReimbursementServlet reimbSlet = new ReimbursementServlet(reimbServ);
         
@@ -38,7 +36,6 @@ public class EnterpriseFoundationMain {
         final String rootContext = "/p1";
         webServer.addContext(rootContext, docBase);
         webServer.addServlet(rootContext, "UserServlet", userSlet).addMapping("/users");
-        webServer.addServlet(rootContext, "RegistrationServlet", regSlet).addMapping("/registration");
         webServer.addServlet(rootContext, "AuthenticationServlet", authSlet).addMapping("/authentication");
         webServer.addServlet(rootContext, "ReimbursementServlet", reimbSlet).addMapping("/reimbursements");
         
