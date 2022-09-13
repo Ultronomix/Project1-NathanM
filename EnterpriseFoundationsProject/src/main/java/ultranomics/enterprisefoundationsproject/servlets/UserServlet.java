@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import ultranomics.enterprisefoundationsproject.DTOs.ResourceCreationDTO;
 import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
 import ultranomics.enterprisefoundationsproject.ErrorReport;
 import ultranomics.enterprisefoundationsproject.datainsertion.NewUserInsertion;
@@ -104,7 +103,7 @@ public class UserServlet extends HttpServlet{
             //userServ.register is passed user to insert, will return with 
             //ResourceCreationDTO to confirm new User was created
             NewUserInsertion requestBody = jsonMapper.readValue(req.getInputStream(), NewUserInsertion.class);
-            ResourceCreationDTO responseBody = userServ.register(requestBody);
+            UserDTO responseBody = userServ.register(requestBody);
             resp.getWriter().write(jsonMapper.writeValueAsString(responseBody));
 
         } catch (InvalidRequestException | JsonMappingException e) {
