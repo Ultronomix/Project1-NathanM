@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import ultranomics.enterprisefoundationsproject.datainsertion.NewUserInsertion;
 import ultranomics.enterprisefoundationsproject.datamodels.User;
 import ultranomics.enterprisefoundationsproject.datasource.ConnectionFactory;
 import ultranomics.enterprisefoundationsproject.exceptiontemplates.DataSourceException;
@@ -75,23 +76,70 @@ public class UserDAO {
         }
     }//end findUserByUsername method
     
-    //TODO finish createUser method
-    public Optional<User> createUser(NewUser userImport){
+    public Optional<User> findUserByEmail(String emailImport){
+        String sql = baseSelect + "WHERE EU.email = ?";
+        
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, emailImport);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+            
+        }catch(SQLException e){
+            //TODO Log Exception
+            e.printStackTrace();
+            throw new DataSourceException (e);
+        }
+    }//end findUserByEmail method
+    
+    
+    public Optional<User> createUser(NewUserInsertion userImport){
         String sql = "INSERT INTO ERS_USERS (username, email, password, given_name, surname, role_id) "+
                 "VALUES ('?', '?', '?', '?', '?', '?') ";
         
         try(Connection conn = ConnectionFactory.getInstance().getConnection()){
-        
             
+            if(userImport.getRole().equalsIgnoreCase("admin")){
+                userImport.setRole("1");
+            }
+            if(userImport.getRole().equalsIgnoreCase("finance manager")){
+                userImport.setRole("2");
+            }
+            if(userImport.getRole().equalsIgnoreCase("employee")){
+                userImport.setRole("3");
+            }
             
-            //needs return
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, userImport.getUsername());
+            pstmt.setObject(2, userImport.getEmail());
+            pstmt.setObject(3, userImport.getPassword());
+            pstmt.setObject(4, userImport.getGivenName());
+            pstmt.setObject(5, userImport.getSurname());
+            pstmt.setObject(6, userImport.getRole());
+            pstmt.executeUpdate();
+            
+            //prepping query to confirm update
+            sql = baseSelect +
+                  "WHERE EU.username = '?'";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, userImport.getUsername());
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+            
         }catch(SQLException e){
             //TODO add error log per 9/9
+            e.printStackTrace();
+            throw new DataSourceException (e);
         }
     }//end of createUser method
     
-    //TODO add isUsernameFree method
-    //TODO add isEmailFree method
+    public boolean isUsernameTaken(String usernameImport){
+        return findUserByUsername(usernameImport).isPresent();
+    }//end isUsernameFree method
+   
+    public boolean isEmailTaken(String emailImport){
+        return findUserByEmail(emailImport).isPresent();
+    }//end isUsernameFree method
     
     public Optional<User> findUserByUsernameAndPassword(String usernameImport, String passwordImport){
         String sql = baseSelect + "WHERE EU.username = ? AND WHERE EU.password = '?'";
@@ -118,10 +166,7 @@ public class UserDAO {
             pstmt.executeUpdate();
             
             //prepping query to confirm update
-            sql = "SELECT EU.user_id, EU.username, EU.email, EU.given_name, EU.surname, EU.is_active, EUR.role " +
-                  "FROM ERS_USERS EU " +
-                  "JOIN ERS_USER_ROLES EUR " +
-                  "ON EU.role_id = EUR.role_id " +
+            sql = baseSelect +
                   "WHERE EU.username = '?'";
             pstmt = conn.prepareStatement(sql);
             pstmt.setObject(1, usernameImport);
