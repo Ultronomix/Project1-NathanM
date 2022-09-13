@@ -25,6 +25,7 @@ public class UserServlet extends HttpServlet{
         this.userServ = importUserServ;
     }
     
+    //doGet:get all users, get single user by username
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectMapper jsonMapper = new ObjectMapper();
@@ -86,6 +87,7 @@ public class UserServlet extends HttpServlet{
         
     }//end doGet method
     
+    //doPost: create new user
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         ObjectMapper jsonMapper = new ObjectMapper();
@@ -119,6 +121,6 @@ public class UserServlet extends HttpServlet{
     }//end doPost method
     
     
-    //TODO add doPut method
-    //TODO add doDelete method
+    //TODO add doPut method (update an existing user)
+    //TODO add doDelete method (update an existing user to inactive)
 }
