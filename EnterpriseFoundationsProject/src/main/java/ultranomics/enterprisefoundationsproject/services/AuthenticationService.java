@@ -1,9 +1,10 @@
 package ultranomics.enterprisefoundationsproject.services;
 
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.AuthenticationException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.InvalidRequestException;
 import ultranomics.enterprisefoundationsproject.DAOs.UserDAO;
 import ultranomics.enterprisefoundationsproject.DTOs.CredentialsDTO;
 import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
-import ultranomics.enterprisefoundationsproject.exceptionTemplates.*;
 
 public class AuthenticationService {
     private final UserDAO userDAO;

@@ -5,17 +5,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import ultranomics.enterprisefoundationsproject.DTOs.ResourceCreationDTO;
 import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
 import ultranomics.enterprisefoundationsproject.ErrorReport;
 import ultranomics.enterprisefoundationsproject.datainsertion.NewUserInsertion;
-import ultranomics.enterprisefoundationsproject.exceptionTemplates.*;
 import ultranomics.enterprisefoundationsproject.services.UserService;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.ResourceNotFoundException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.InvalidRequestException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.DataSourceException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.ResourcePersistenceException;
+
 
 public class UserServlet extends HttpServlet{
     

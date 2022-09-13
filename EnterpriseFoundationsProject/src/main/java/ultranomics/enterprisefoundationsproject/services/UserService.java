@@ -7,7 +7,7 @@ import ultranomics.enterprisefoundationsproject.DTOs.ResourceCreationDTO;
 import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
 import ultranomics.enterprisefoundationsproject.datainsertion.NewUserInsertion;
 import ultranomics.enterprisefoundationsproject.datamodels.User;
-import ultranomics.enterprisefoundationsproject.exceptionTemplates.InvalidRequestException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.InvalidRequestException;
 
 public class UserService {
     private final UserDAO userDAO;

@@ -1,4 +1,4 @@
-package ultranomics.enterprisefoundationsproject.exceptionTemplates;
+package ultranomics.enterprisefoundationsproject.exceptiontemplates;
 
 public class ResourceNotFoundException extends RuntimeException{
     public ResourceNotFoundException(){

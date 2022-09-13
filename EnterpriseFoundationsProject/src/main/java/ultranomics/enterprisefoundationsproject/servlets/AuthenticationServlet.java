@@ -10,9 +10,9 @@ import javax.servlet.http.HttpSession;
 import ultranomics.enterprisefoundationsproject.DTOs.CredentialsDTO;
 import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
 import ultranomics.enterprisefoundationsproject.ErrorReport;
-import ultranomics.enterprisefoundationsproject.exceptionTemplates.AuthenticationException;
-import ultranomics.enterprisefoundationsproject.exceptionTemplates.DataSourceException;
-import ultranomics.enterprisefoundationsproject.exceptionTemplates.InvalidRequestException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.AuthenticationException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.DataSourceException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.InvalidRequestException;
 import ultranomics.enterprisefoundationsproject.services.AuthenticationService;
 
 public class AuthenticationServlet extends HttpServlet{

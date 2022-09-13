@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import ultranomics.enterprisefoundationsproject.datamodels.User;
 import ultranomics.enterprisefoundationsproject.datasource.ConnectionFactory;
-import ultranomics.enterprisefoundationsproject.exceptionTemplates.DataSourceException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.DataSourceException;
 
 public class UserDAO {
     private final String baseSelect = "SELECT EU.user_id, EU.username, EU.email, EU.given_name, EU.surname, EU.is_active, EUR.role " +
