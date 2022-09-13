@@ -10,6 +10,7 @@ public class NewUserInsertion implements Request<User>{
     private String email;
     private String username;
     private String password;
+    private String role;
     
     
     public String getGivenName() {
@@ -52,6 +53,14 @@ public class NewUserInsertion implements Request<User>{
         this.password = password;
     }    
     
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+    
     @Override
     public String toString() {
         return "NewUserInsertion{ " + "givenName=" + givenName + 
@@ -69,6 +78,7 @@ public class NewUserInsertion implements Request<User>{
        extractedEntity.setEmail(this.email);
        extractedEntity.setUsername(this.username);
        extractedEntity.setPassword(this.password);
+       extractedEntity.setRole(this.role);
        
        return extractedEntity;
     }
