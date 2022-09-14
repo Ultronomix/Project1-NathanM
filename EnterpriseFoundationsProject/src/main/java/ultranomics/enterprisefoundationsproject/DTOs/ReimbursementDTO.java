@@ -1,5 +1,7 @@
 package ultranomics.enterprisefoundationsproject.DTOs;
 
+import ultranomics.enterprisefoundationsproject.datamodels.Reimbursement;
+
 public class ReimbursementDTO {
     private String reimbID;
     private double amount;
@@ -10,6 +12,19 @@ public class ReimbursementDTO {
     private String resolverID;
     private String statusID;
     private String typeID;    
+
+    public ReimbursementDTO(Reimbursement reimbImport) {
+        this.reimbID = reimbImport.getReimbID();
+        this.amount = reimbImport.getAmount();
+        this.timeSub = reimbImport.getTimeSub();
+        this.timeResolved = reimbImport.getTimeResolved();
+        this.description = reimbImport.getDescription();
+        this.authorID = reimbImport.getAuthorID();
+        this.resolverID = reimbImport.getResolverID();
+        this.statusID = reimbImport.getStatusID();
+        this.typeID = reimbImport.getTypeID();
+        
+    }
 
     //getters and setters
     public String getReimbID() {
