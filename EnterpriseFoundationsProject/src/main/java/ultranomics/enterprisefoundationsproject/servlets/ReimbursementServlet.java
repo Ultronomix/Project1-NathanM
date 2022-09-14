@@ -55,12 +55,9 @@ public class ReimbursementServlet extends HttpServlet{
         //Gathering submitted username to be verified for authorization
         String usernameSubmission = req.getParameter("username");
         
-        //userSession set in AuthenticationServlet which sets "authUser" after someone has logged in
-        UserDTO requester = (UserDTO) userSession.getAttribute("authUser");
-        
         if(!usernameSubmission.equals(userSession.getAttribute("authUser"))){
             resp.setStatus(403);
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, "ERROR 403: Authorization Insufficent to Access")));
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, "ERROR 403: Reimbusement Author does not match logged in user")));
         }
         
         try{
@@ -75,11 +72,6 @@ public class ReimbursementServlet extends HttpServlet{
             //TODO add logging based on 9/9 lecture
             resp.setStatus(400); // BAD REQUEST
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(400, e.getMessage())));
-
-        } catch (ResourcePersistenceException e) {
-            //TODO add logging based on 9/9 lecture
-            resp.setStatus(409); // CONFLICT; indicates that the provided resource could not be saved without conflicting with other data
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(409, e.getMessage())));
 
         } catch (DataSourceException e) {
             //TODO add logging based on 9/9 lecture
