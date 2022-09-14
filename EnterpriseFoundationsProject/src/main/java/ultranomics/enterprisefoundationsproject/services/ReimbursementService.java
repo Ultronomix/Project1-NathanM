@@ -1,5 +1,7 @@
 package ultranomics.enterprisefoundationsproject.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import ultranomics.enterprisefoundationsproject.DAOs.ReimbursementDAO;
 import ultranomics.enterprisefoundationsproject.DTOs.ReimbursementDTO;
 import ultranomics.enterprisefoundationsproject.datainsertion.NewReimbursementInsertion;
@@ -42,4 +44,24 @@ public class ReimbursementService {
         ReimbursementDTO result = new ReimbursementDTO(target);
         return result;
     }//end generate method
+    
+    public List<ReimbursementDTO> getOwnedReimbs(String usernameImport){
+        List<ReimbursementDTO> result = new ArrayList<>();
+        List<Reimbursement> reimbList = reimbursementDAO.getOwned(usernameImport);
+        for(Reimbursement transfer : reimbList){
+            result.add(new ReimbursementDTO(transfer));
+        }
+        
+        return result;
+    }
+    
+    public List<ReimbursementDTO> getOwnedPendingReimbs(String usernameImport){
+        List<ReimbursementDTO> result = new ArrayList<>();
+        List<Reimbursement> reimbList = reimbursementDAO.getOwnedPending(usernameImport);
+        for(Reimbursement transfer : reimbList){
+            result.add(new ReimbursementDTO(transfer));
+        }
+        
+        return result;
+    }
 }//end ReimbursementService class
