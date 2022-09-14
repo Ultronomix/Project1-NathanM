@@ -14,7 +14,7 @@ import ultranomics.enterprisefoundationsproject.exceptiontemplates.DataSourceExc
 
 public class ReimbursementDAO {
     String baseSelect = 
-            "SELECT REIMB_ID, AMOUNT, SUBMITTED, DESCRIPTION, USERNAME , STATUS , \"type\"  " +
+            "SELECT REIMB_ID, AMOUNT, SUBMITTED, RESOLVED, DESCRIPTION, AUTHOR_ID, RESOLVER_ID, STATUS_ID, TYPE_ID  " +
             "FROM ERS_REIMBURSEMENTS ER " ;
 
     
@@ -73,4 +73,53 @@ public class ReimbursementDAO {
             throw new DataSourceException (e);
         }
     }//end of create method
+    
+    public List<Reimbursement> getOwned(String usernameImport){
+        String sql = "WHERE AUTHOR_ID = '?' "+
+                     "ORDER BY REIMB_ID ";
+        
+        List<Reimbursement> ownedReimb = new ArrayList<>();
+        
+        try(Connection conn =ConnectionFactory.getInstance().getConnection()){
+            
+            
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect);
+            pstmt.setObject(1, usernameImport); 
+            ResultSet rs = pstmt.executeQuery();
+             
+            ownedReimb = mapResultSet(rs);
+             
+         }catch(SQLException e){
+            //TODO Log Exception
+            System.out.println("Error with ConnectionFactory");
+            e.printStackTrace();
+         }
+         
+         return ownedReimb;
+    }//end of getOwned
+    
+    public List<Reimbursement> getOwnedPending(String usernameImport){
+        String sql = "WHERE AUTHOR_ID = '?' AND WHERE STATUS_ID = '1' "+
+                     "ORDER BY REIMB_ID ";
+        
+        List<Reimbursement> ownedReimb = new ArrayList<>();
+        
+        try(Connection conn =ConnectionFactory.getInstance().getConnection()){
+             
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect);
+            pstmt.setObject(1, usernameImport); 
+            ResultSet rs = pstmt.executeQuery();
+             
+            ownedReimb = mapResultSet(rs);
+             
+         }catch(SQLException e){
+            //TODO Log Exception
+            System.out.println("Error with ConnectionFactory");
+            e.printStackTrace();
+         }
+         
+         return ownedReimb;
+    }//end of getOwned
+    
+    
 }//end of ReimbursementDAO class
