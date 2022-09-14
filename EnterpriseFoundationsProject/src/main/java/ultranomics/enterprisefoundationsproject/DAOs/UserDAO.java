@@ -182,6 +182,7 @@ public class UserDAO {
         
     }//end deactivateUser method
 
+    //formats query results to array of table items
     private List<User> mapResultSet(ResultSet rs) throws SQLException{
         List<User> users = new ArrayList<>();
         
