@@ -12,7 +12,7 @@ public class NewUserInsertion implements Request<User>{
     private String password;
     private String role;
     
-    
+    //getters and setters
     public String getGivenName() {
         return givenName;
     }
@@ -63,7 +63,8 @@ public class NewUserInsertion implements Request<User>{
     
     @Override
     public String toString() {
-        return "NewUserInsertion{ " + "givenName=" + givenName + 
+        return "NewUserInsertion{ " + 
+                "givenName=" + givenName + 
                 ", \nsurname=" + surname + 
                 ", \nemail=" + email + 
                 ", \nusername=" + username + 
