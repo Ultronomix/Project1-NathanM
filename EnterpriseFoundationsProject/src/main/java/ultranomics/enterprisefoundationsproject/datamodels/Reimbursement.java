@@ -6,8 +6,6 @@ public class Reimbursement {
     private String timeSub;
     private String timeResolved;
     private String description;
-    //ask about blob(bytea) datatype PostgreSQL vs Java
-    private String paymentID;
     private String authorID;
     private String resolverID;
     private String statusID;
@@ -51,14 +49,6 @@ public class Reimbursement {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getPaymentID() {
-        return paymentID;
-    }
-
-    public void setPaymentID(String paymentID) {
-        this.paymentID = paymentID;
     }
 
     public String getAuthorID() {
