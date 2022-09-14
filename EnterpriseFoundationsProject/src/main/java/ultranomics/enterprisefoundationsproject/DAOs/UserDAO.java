@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +28,8 @@ public class UserDAO {
          
          try(Connection conn =ConnectionFactory.getInstance().getConnection()){
              
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(baseSelect);
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect);
+            ResultSet rs = pstmt.executeQuery();
              
             allUsers = mapResultSet(rs);
              
