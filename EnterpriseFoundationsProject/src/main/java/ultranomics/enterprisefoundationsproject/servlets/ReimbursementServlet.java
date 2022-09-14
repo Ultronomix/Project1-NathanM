@@ -63,23 +63,30 @@ public class ReimbursementServlet extends HttpServlet{
         try{
             //if logic for which doGet method call is needed
             //get owned pending reimbursements (user_ID matches author_id with pending condition)
-//YOU ARE HERE AFTER LUNCH
             if(requester.getRole().equals("employee") && requester.getUsername().equals(usernameSubmission) && searchCondition.equals("pending")){
-                //TODO complete
-            }
+                List<ReimbursementDTO> ownedReimb = reimbursementServ.getOwnedPendingReimbs(usernameSubmission);
+                //Translates List to json and sends back to server
+                resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
+            }else
             //get owned reimbursements(user_ID matches author_id)
             if(requester.getRole().equals("employee") && requester.getUsername().equals(usernameSubmission)){
                 List<ReimbursementDTO> ownedReimb = reimbursementServ.getOwnedReimbs(usernameSubmission);
                 //Translates List to json and sends back to server
                 resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
-            }
+            }else
             //get pending reimbursements(require not employee),
-            if(){
-                //TODO complete
-            }
+            if(!requester.getRole().equals("employee") && searchCondition.equals("pending")){
+                List<ReimbursementDTO> ownedReimb = reimbursementServ.getAllPendingReimbs(usernameSubmission);
+                //Translates List to json and sends back to server
+                resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
+            }else 
             //get all reimbursements(require not employee)
-            if(){
-                //TODO complete
+            if(!requester.getRole().equals("employee")){
+                List<ReimbursementDTO> ownedReimb = reimbursementServ.getAllReimbs(usernameSubmission);
+                //Translates List to json and sends back to server
+                resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
+            }else{
+                throw new InvalidRequestException("Request format does not match any doGet method");
             }
         }catch(InvalidRequestException e){
             //TODO add logging based on 9/9 lecture
