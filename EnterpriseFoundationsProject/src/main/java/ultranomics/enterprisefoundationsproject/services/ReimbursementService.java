@@ -45,6 +45,26 @@ public class ReimbursementService {
         return result;
     }//end generate method
     
+    public List<ReimbursementDTO> getAllReimbs(String usernameImport){
+        List<ReimbursementDTO> result = new ArrayList<>();
+        List<Reimbursement> reimbList = reimbursementDAO.getAll(usernameImport);
+        for(Reimbursement transfer : reimbList){
+            result.add(new ReimbursementDTO(transfer));
+        }
+        
+        return result;
+    }
+    
+    public List<ReimbursementDTO> getAllPendingReimbs(String usernameImport){
+        List<ReimbursementDTO> result = new ArrayList<>();
+        List<Reimbursement> reimbList = reimbursementDAO.getAllPending(usernameImport);
+        for(Reimbursement transfer : reimbList){
+            result.add(new ReimbursementDTO(transfer));
+        }
+        
+        return result;
+    }
+    
     public List<ReimbursementDTO> getOwnedReimbs(String usernameImport){
         List<ReimbursementDTO> result = new ArrayList<>();
         List<Reimbursement> reimbList = reimbursementDAO.getOwned(usernameImport);
