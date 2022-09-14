@@ -74,6 +74,52 @@ public class ReimbursementDAO {
         }
     }//end of create method
     
+    public List<Reimbursement> getAll(String usernameImport){
+        
+        List<Reimbursement> ownedReimb = new ArrayList<>();
+        
+        try(Connection conn =ConnectionFactory.getInstance().getConnection()){
+            
+            
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect);
+            ResultSet rs = pstmt.executeQuery();
+             
+            ownedReimb = mapResultSet(rs);
+             
+         }catch(SQLException e){
+            //TODO Log Exception
+            System.out.println("Error with ConnectionFactory");
+            e.printStackTrace();
+         }
+         
+         return ownedReimb;
+    }//end of getAll method
+    
+    public List<Reimbursement> getAllPending(String usernameImport){
+        String sql = "WHERE STATUS_ID = '1' "+
+                     "ORDER BY REIMB_ID ";
+        
+        List<Reimbursement> ownedReimb = new ArrayList<>();
+        
+        try(Connection conn =ConnectionFactory.getInstance().getConnection()){
+             
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect + sql);
+            ResultSet rs = pstmt.executeQuery();
+             
+            ownedReimb = mapResultSet(rs);
+             
+         }catch(SQLException e){
+            //TODO Log Exception
+            System.out.println("Error with ConnectionFactory");
+            e.printStackTrace();
+         }
+         
+         return ownedReimb;
+    }//end of getAllPending method
+    
+    
+    
+    
     public List<Reimbursement> getOwned(String usernameImport){
         String sql = "WHERE AUTHOR_ID = '?' "+
                      "ORDER BY REIMB_ID ";
@@ -83,7 +129,7 @@ public class ReimbursementDAO {
         try(Connection conn =ConnectionFactory.getInstance().getConnection()){
             
             
-            PreparedStatement pstmt = conn.prepareStatement(baseSelect);
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect + sql);
             pstmt.setObject(1, usernameImport); 
             ResultSet rs = pstmt.executeQuery();
              
@@ -96,7 +142,7 @@ public class ReimbursementDAO {
          }
          
          return ownedReimb;
-    }//end of getOwned
+    }//end of getOwned method
     
     public List<Reimbursement> getOwnedPending(String usernameImport){
         String sql = "WHERE AUTHOR_ID = '?' AND WHERE STATUS_ID = '1' "+
@@ -106,7 +152,7 @@ public class ReimbursementDAO {
         
         try(Connection conn =ConnectionFactory.getInstance().getConnection()){
              
-            PreparedStatement pstmt = conn.prepareStatement(baseSelect);
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect + sql);
             pstmt.setObject(1, usernameImport); 
             ResultSet rs = pstmt.executeQuery();
              
@@ -119,7 +165,7 @@ public class ReimbursementDAO {
          }
          
          return ownedReimb;
-    }//end of getOwned
+    }//end of getOwnedPending method
     
     
 }//end of ReimbursementDAO class
