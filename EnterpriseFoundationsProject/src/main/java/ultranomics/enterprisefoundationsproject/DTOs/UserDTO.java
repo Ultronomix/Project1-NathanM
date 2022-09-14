@@ -82,13 +82,13 @@ public class UserDTO implements Serializable{
     @Override
     public String toString() {
         return "UserDTO{"+
-                "userID='"+userID+'\''+
-                ", username=" + username +'\''+ 
-                ", email=" + email +'\''+ 
-                ", givenName=" + givenName +'\''+ 
-                ", surname=" + surname +'\''+ 
-                ", role=" + role +'\''+ 
-                ", active=" + active +'\''+ 
+                "\nuserID='"+userID+'\''+
+                ", \nusername=" + username +'\''+ 
+                ", \nemail=" + email +'\''+ 
+                ", \ngivenName=" + givenName +'\''+ 
+                ", \nsurname=" + surname +'\''+ 
+                ", \nrole=" + role +'\''+ 
+                ", \nactive=" + active +'\''+ 
                 '}';
     }
 }
