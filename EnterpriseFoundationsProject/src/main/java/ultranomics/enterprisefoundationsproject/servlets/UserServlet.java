@@ -57,38 +57,37 @@ public class UserServlet extends HttpServlet{
         if(!requester.getRole().equals("admin") && !requester.getUsername().equals(usernameSubmission)){
             resp.setStatus(403);
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, "ERROR 403: Authorization Insufficent to Access")));
-        }
-        
-        try{
-            //logic to determine if one user is requested or all users
-            if(usernameSubmission == null){
-                //list of all UserDTOs pulled from Service Layer 
-                List<UserDTO> allUsers = userServ.getAllUsers();
-                //Custom Header added
-                resp.addHeader("Header name", "Header body");
-                //Translates List to json and sends back to server
-                resp.getWriter().write(jsonMapper.writeValueAsString(allUsers));
-            }else{
-                //single UserDTO pulled from Service Layer matching submitted username
-                UserDTO foundUser = userServ.getUserByUsername(usernameSubmission);
-                //Translates single UserDTO to json and sends to server
-                resp.getWriter().write(jsonMapper.writeValueAsString(foundUser));
+        }else{
+            try{
+                //logic to determine if one user is requested or all users
+                if(usernameSubmission == null){
+                    //list of all UserDTOs pulled from Service Layer 
+                    List<UserDTO> allUsers = userServ.getAllUsers();
+                    //Custom Header added
+                    resp.addHeader("Header name", "Header body");
+                    //Translates List to json and sends back to server
+                    resp.getWriter().write(jsonMapper.writeValueAsString(allUsers));
+                }else{
+                    //single UserDTO pulled from Service Layer matching submitted username
+                    UserDTO foundUser = userServ.getUserByUsername(usernameSubmission);
+                    //Translates single UserDTO to json and sends to server
+                    resp.getWriter().write(jsonMapper.writeValueAsString(foundUser));
+                }
+
+            }catch(InvalidRequestException e){
+                //TODO add logging based on 9/9 lecture
+                resp.setStatus(400);
+                resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(400, e.getMessage())));
+            }catch(ResourceNotFoundException e){
+                //TODO add logging based on 9/9 lecture
+                resp.setStatus(404);
+                resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(404, e.getMessage())));
+            }catch(DataSourceException e){
+                //TODO add logging based on 9/9 lecture
+                resp.setStatus(500);
+                resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));
             }
-            
-        }catch(InvalidRequestException e){
-            //TODO add logging based on 9/9 lecture
-            resp.setStatus(400);
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(400, e.getMessage())));
-        }catch(ResourceNotFoundException e){
-            //TODO add logging based on 9/9 lecture
-            resp.setStatus(404);
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(404, e.getMessage())));
-        }catch(DataSourceException e){
-            //TODO add logging based on 9/9 lecture
-            resp.setStatus(500);
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));
         }
-        
         
     }//end doGet method
     
