@@ -49,6 +49,9 @@ public class ReimbursementServlet extends HttpServlet{
         //Gathering submitted username to be verified for authorization
         String usernameSubmission = req.getParameter("username");
         String searchStatus = req.getParameter("status");
+        if(searchStatus == null){
+            searchStatus = "";
+        }
         
         //userSession set in AuthenticationServlet which sets "authUser" after someone has logged in
         UserDTO requester = (UserDTO) userSession.getAttribute("authUser");
@@ -58,6 +61,7 @@ public class ReimbursementServlet extends HttpServlet{
         if(requester.getRole().equals("employee") && !requester.getUsername().equals(usernameSubmission)){
             resp.setStatus(403);
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, "ERROR 403: Authorization Insufficent to Access")));
+            return;
         }
         
         try{
