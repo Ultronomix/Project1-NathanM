@@ -33,9 +33,13 @@ public class UserService {
                     " or empty and can not be looked up");
         }
         
-        User target = userDAO.findUserByUsername(usernameImport).orElse(null); 
-        UserDTO result = new UserDTO(target);
-        return result;
+        try{
+            User target = userDAO.findUserByUsername(usernameImport).orElse(null); 
+            UserDTO result = new UserDTO(target);
+            return result;
+        }catch(IllegalArgumentException e){
+            throw new InvalidRequestException("ERROR: searched username was not found");
+        }
     }
     
     public UserDTO register(NewUserInsertion newUser) throws InvalidRequestException, ResourcePersistenceException{
