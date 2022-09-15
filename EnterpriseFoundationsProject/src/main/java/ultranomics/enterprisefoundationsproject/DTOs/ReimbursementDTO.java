@@ -13,6 +13,11 @@ public class ReimbursementDTO {
     private String statusID;
     private String typeID;    
 
+    //make Jackson happy with default constructor
+    public ReimbursementDTO(){
+        super();
+    }
+    
     public ReimbursementDTO(Reimbursement reimbImport) {
         this.reimbID = reimbImport.getReimbID();
         this.amount = reimbImport.getAmount();
