@@ -50,20 +50,20 @@ public class ReimbursementDAO {
         try(Connection conn = ConnectionFactory.getInstance().getConnection()){
                         
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setObject(1, reimbImport.getAmount());
-            pstmt.setObject(2, reimbImport.getTimeSub());
-            pstmt.setObject(3, reimbImport.getDescription());
-            pstmt.setObject(4, reimbImport.getAuthorID());
-            pstmt.setObject(5, reimbImport.getStatusID());
-            pstmt.setObject(6, reimbImport.getTypeID());
+            pstmt.setDouble(1, reimbImport.getAmount());
+            pstmt.setString(2, reimbImport.getTimeSub());
+            pstmt.setString(3, reimbImport.getDescription());
+            pstmt.setString(4, reimbImport.getAuthorID());
+            pstmt.setString(5, reimbImport.getStatusID());
+            pstmt.setString(6, reimbImport.getTypeID());
             pstmt.executeUpdate();
             
             //prepping query to confirm update
             sql = baseSelect +
                   "WHERE AUTHOR_ID = '?' AND SUBMITTED = '?'";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setObject(1, reimbImport.getAuthorID());
-            pstmt.setObject(2, reimbImport.getTimeSub());
+            pstmt.setString(1, reimbImport.getAuthorID());
+            pstmt.setString(2, reimbImport.getTimeSub());
             ResultSet rs = pstmt.executeQuery();
             return mapResultSet(rs).stream().findFirst();
             
@@ -130,7 +130,7 @@ public class ReimbursementDAO {
             
             
             PreparedStatement pstmt = conn.prepareStatement(baseSelect + sql);
-            pstmt.setObject(1, usernameImport); 
+            pstmt.setString(1, usernameImport); 
             ResultSet rs = pstmt.executeQuery();
              
             ownedReimb = mapResultSet(rs);
@@ -153,7 +153,7 @@ public class ReimbursementDAO {
         try(Connection conn =ConnectionFactory.getInstance().getConnection()){
              
             PreparedStatement pstmt = conn.prepareStatement(baseSelect + sql);
-            pstmt.setObject(1, usernameImport); 
+            pstmt.setString(1, usernameImport); 
             ResultSet rs = pstmt.executeQuery();
              
             ownedReimb = mapResultSet(rs);
