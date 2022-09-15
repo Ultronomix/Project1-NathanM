@@ -29,9 +29,9 @@ public class ReimbursementDAO {
             reimbursement.setAmount(rs.getDouble("AMOUNT"));
             reimbursement.setTimeSub(rs.getString("SUBMITTED"));
             reimbursement.setDescription(rs.getString("DESCRIPTION"));
-            reimbursement.setAuthorID(rs.getString("USERNAME"));
-            reimbursement.setStatusID(rs.getString("STATUS"));
-            reimbursement.setTypeID(rs.getString("type"));
+            reimbursement.setAuthorID(rs.getString("AUTHOR_ID"));
+            reimbursement.setStatusID(rs.getString("STATUS_ID"));
+            reimbursement.setTypeID(rs.getString("TYPE_ID"));
             
             reimbursements.add(reimbursement);
         }
