@@ -141,12 +141,12 @@ public class UserDAO {
     }//end isUsernameFree method
     
     public Optional<User> findUserByUsernameAndPassword(String usernameImport, String passwordImport){
-        String sql = baseSelect + "WHERE EU.username = ? AND WHERE EU.password = '?'";
+        String sql = baseSelect + "WHERE EU.username = ? AND EU.password = ?";
         
         try(Connection conn = ConnectionFactory.getInstance().getConnection()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setObject(1, usernameImport);
-            pstmt.setObject(2, passwordImport);
+            pstmt.setString(1, usernameImport);
+            pstmt.setString(2, passwordImport);
             ResultSet rs = pstmt.executeQuery();
             return mapResultSet(rs).stream().findFirst();
             
