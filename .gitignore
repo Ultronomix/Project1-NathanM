@@ -2,6 +2,8 @@ application.properties
 
 logs/
 
+surefire-reports/
+
 # Compiled class file
 *.class
 
