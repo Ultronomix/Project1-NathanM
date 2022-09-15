@@ -83,7 +83,7 @@ public class UserService {
     
     //TODO add updateUser method
     
-    //TODO add deactivateUser method
+    
     public UserDTO deactivate(String usernameImport){
         User target = userDAO.deactivateUser(usernameImport).orElse(null);
         UserDTO result = new UserDTO(target);
