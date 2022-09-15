@@ -32,6 +32,7 @@ public class AuthenticationServlet extends HttpServlet{
         resp.setContentType("application/json");
 
         try{
+            //req.getInputStream() = reading body of JSON
             CredentialsDTO creds = jsonMapper.readValue(req.getInputStream(), CredentialsDTO.class);
             UserDTO response = authenticationServ.authenticate(creds);
             resp.setStatus(200);//If we make it to this point then the Username/Password matched a user
@@ -59,7 +60,6 @@ public class AuthenticationServlet extends HttpServlet{
             resp.setStatus(500);//SERVER ERROR
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));
         }
-        //TODO complete doPost method
     }//end doPost method
     
     
