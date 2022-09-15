@@ -1,8 +1,8 @@
 package ultranomics.enterprisefoundationsproject.DTOs;
 
 import java.io.Serializable;
+import java.util.Objects;
 import ultranomics.enterprisefoundationsproject.datamodels.User;
-import ultranomics.enterprisefoundationsproject.exceptiontemplates.ResourceNotFoundException;
 
 public class UserDTO implements Serializable{
     
@@ -13,6 +13,13 @@ public class UserDTO implements Serializable{
     private String surname;
     private String role;
     private String active;
+
+    
+    
+    //make Jackson happy with default constructor
+    public UserDTO(){
+        super();
+    }
     
     public UserDTO(User subject){
         
@@ -93,4 +100,54 @@ public class UserDTO implements Serializable{
                 ", \nactive=" + active +'\''+ 
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + Objects.hashCode(this.userID);
+        hash = 13 * hash + Objects.hashCode(this.username);
+        hash = 13 * hash + Objects.hashCode(this.email);
+        hash = 13 * hash + Objects.hashCode(this.givenName);
+        hash = 13 * hash + Objects.hashCode(this.surname);
+        hash = 13 * hash + Objects.hashCode(this.role);
+        hash = 13 * hash + Objects.hashCode(this.active);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UserDTO other = (UserDTO) obj;
+        if (!Objects.equals(this.userID, other.userID)) {
+            return false;
+        }
+        if (!Objects.equals(this.username, other.username)) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.givenName, other.givenName)) {
+            return false;
+        }
+        if (!Objects.equals(this.surname, other.surname)) {
+            return false;
+        }
+        if (!Objects.equals(this.role, other.role)) {
+            return false;
+        }
+        if (!Objects.equals(this.active, other.active)) {
+            return false;
+        }
+        return true;
+    }
+
 }
