@@ -15,10 +15,6 @@ public class UserDTO implements Serializable{
     private String active;
     
     public UserDTO(User subject){
-        //TODO move this to UserService.getUserByUsername 
-        if (subject == null){
-            throw new ResourceNotFoundException("ERROR: Username not found");
-        }
         
         this.userID = subject.getUserID();
         this.username = subject.getUsername();

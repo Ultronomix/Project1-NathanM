@@ -35,6 +35,10 @@ public class UserService {
         
         try{
             User target = userDAO.findUserByUsername(usernameImport).orElse(null); 
+            if (target == null){
+                throw new IllegalArgumentException("ERROR: Username not found");
+            }
+            
             UserDTO result = new UserDTO(target);
             return result;
         }catch(IllegalArgumentException e){
