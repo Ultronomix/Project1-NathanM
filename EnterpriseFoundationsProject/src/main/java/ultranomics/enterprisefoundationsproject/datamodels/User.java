@@ -10,6 +10,22 @@ public class User {
     private boolean isActive;
     private String role;
 
+    //make Jackson happy with default constructor
+    public User() {
+        super();
+    }
+
+    public User(String userID, String username, String email, String password, String givenName, String surname, boolean isActive, String role) {
+        this.userID = userID;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.givenName = givenName;
+        this.surname = surname;
+        this.isActive = isActive;
+        this.role = role;
+    }
+    
     public String getUserID() {
         return userID;
     }
