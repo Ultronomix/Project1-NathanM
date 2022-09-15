@@ -3,6 +3,11 @@ package ultranomics.enterprisefoundationsproject.DTOs;
 public class ResourceCreationDTO {
     private String resourceID;
     
+    //make Jackson happy with default constructor
+    public ResourceCreationDTO(){
+        super();
+    }
+    
     public ResourceCreationDTO(String importID){
         this.resourceID = importID;
     }
