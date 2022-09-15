@@ -66,6 +66,11 @@ public class AuthenticationServlet extends HttpServlet{
     //doDelete: log out
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ObjectMapper jsonMapper = new ObjectMapper();
+        resp.setContentType("application/json");
+        
         req.getSession().invalidate(); // this effectively "logs out" the requester by invalidating the session within the server
+        resp.setStatus(200);
+        resp.getWriter().write(jsonMapper.writeValueAsString("Successfully logged out"));
     }//end doDelete method
 }
