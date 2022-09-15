@@ -48,7 +48,7 @@ public class ReimbursementServlet extends HttpServlet{
         
         //Gathering submitted username to be verified for authorization
         String usernameSubmission = req.getParameter("username");
-        String searchCondition = req.getParameter("condition");
+        String searchStatus = req.getParameter("status");
         
         //userSession set in AuthenticationServlet which sets "authUser" after someone has logged in
         UserDTO requester = (UserDTO) userSession.getAttribute("authUser");
@@ -63,7 +63,7 @@ public class ReimbursementServlet extends HttpServlet{
         try{
             //if logic for which doGet method call is needed
             //get owned pending reimbursements (user_ID matches author_id with pending condition)
-            if(requester.getRole().equals("employee") && requester.getUsername().equals(usernameSubmission) && searchCondition.equals("pending")){
+            if(requester.getRole().equals("employee") && requester.getUsername().equals(usernameSubmission) && searchStatus.equals("pending")){
                 List<ReimbursementDTO> ownedReimb = reimbursementServ.getOwnedPendingReimbs(usernameSubmission);
                 //Translates List to json and sends back to server
                 resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
@@ -74,8 +74,8 @@ public class ReimbursementServlet extends HttpServlet{
                 //Translates List to json and sends back to server
                 resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
             }else
-            //get pending reimbursements(require not employee),
-            if(!requester.getRole().equals("employee") && searchCondition.equals("pending")){
+            //get pending reimbursements(require not employee)
+            if(!requester.getRole().equals("employee") && searchStatus.equals("pending")){
                 List<ReimbursementDTO> ownedReimb = reimbursementServ.getAllPendingReimbs(usernameSubmission);
                 //Translates List to json and sends back to server
                 resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
