@@ -12,7 +12,7 @@ public class UserDTO implements Serializable{
     private String givenName;
     private String surname;
     private String role;
-    private String active;
+    private boolean active;
 
     
     
@@ -29,6 +29,7 @@ public class UserDTO implements Serializable{
         this.givenName = subject.getGivenName();
         this.surname = subject.getSurname();
         this.role = subject.getRole();
+        this.active = subject.getIsActive();
     }
     
     public String getUserID() {
@@ -79,11 +80,11 @@ public class UserDTO implements Serializable{
         this.role = role;
     }
     
-    public String getActive() {
+    public boolean getActive() {
         return active;
     }
 
-    public void setActive(String active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
     

@@ -28,7 +28,7 @@ public class UserDAO {
          
          try(Connection conn =ConnectionFactory.getInstance().getConnection()){
              
-            PreparedStatement pstmt = conn.prepareStatement(baseSelect);
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect+ "ORDER BY EU.user_id");
             ResultSet rs = pstmt.executeQuery();
              
             allUsers = mapResultSet(rs);
@@ -94,7 +94,7 @@ public class UserDAO {
     
     public Optional<User> createUser(NewUserInsertion userImport){
         String sql = "INSERT INTO ERS_USERS (username, email, password, given_name, surname, role_id) "+
-                "VALUES ('?', '?', '?', '?', '?', '?') ";
+                "VALUES (?, ?, ?, ?, ?, ?) ";
         
         try(Connection conn = ConnectionFactory.getInstance().getConnection()){
             
@@ -109,17 +109,17 @@ public class UserDAO {
             }
             
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setObject(1, userImport.getUsername());
-            pstmt.setObject(2, userImport.getEmail());
-            pstmt.setObject(3, userImport.getPassword());
-            pstmt.setObject(4, userImport.getGivenName());
-            pstmt.setObject(5, userImport.getSurname());
-            pstmt.setObject(6, userImport.getRole());
+            pstmt.setString(1, userImport.getUsername());
+            pstmt.setString(2, userImport.getEmail());
+            pstmt.setString(3, userImport.getPassword());
+            pstmt.setString(4, userImport.getGivenName());
+            pstmt.setString(5, userImport.getSurname());
+            pstmt.setString(6, userImport.getRole());
             pstmt.executeUpdate();
             
             //prepping query to confirm update
             sql = baseSelect +
-                  "WHERE EU.username = '?'";
+                  "WHERE EU.username = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setObject(1, userImport.getUsername());
             ResultSet rs = pstmt.executeQuery();
@@ -166,7 +166,7 @@ public class UserDAO {
             
             //prepping query to confirm update
             sql = baseSelect +
-                  "WHERE EU.username = '?'";
+                  "WHERE EU.username = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setObject(1, usernameImport);
             ResultSet rs = pstmt.executeQuery();
