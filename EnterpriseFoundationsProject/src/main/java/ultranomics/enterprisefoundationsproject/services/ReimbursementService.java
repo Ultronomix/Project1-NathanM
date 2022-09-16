@@ -1,5 +1,7 @@
 package ultranomics.enterprisefoundationsproject.services;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import ultranomics.enterprisefoundationsproject.DAOs.ReimbursementDAO;
@@ -16,25 +18,19 @@ public class ReimbursementService {
     }
 
     public ReimbursementDTO generate(NewReimbursementInsertion reimbImport) throws InvalidRequestException{
-        //TODO add if logic for field validation before passing to DAO
-
+        
+        
+        reimbImport.setTimeSub(Timestamp.valueOf(LocalDateTime.now()).toString());
+        reimbImport.setStatusID("1");
+        
         if(reimbImport == null){
             throw new InvalidRequestException("ERROR: can not register null payload");
         }
         if(reimbImport.getAmount() <= 0){
             throw new InvalidRequestException("ERROR: can not register reimbursement amount less than $0.01");
         }
-        if(reimbImport.getTimeSub() == null || reimbImport.getTimeSub().length() <= 0 ){
-            throw new InvalidRequestException("ERROR: must document day and time of expense");
-        }
         if(reimbImport.getDescription() == null || reimbImport.getDescription().length() <= 0 ){
             throw new InvalidRequestException("ERROR: reimbursement description must be provided");
-        }
-        if(reimbImport.getAuthorID() == null || reimbImport.getAuthorID().length() <= 0 ){
-            throw new InvalidRequestException("ERROR: authorID must be listed");
-        }
-        if(reimbImport.getStatusID() == null || reimbImport.getStatusID().length() <= 0 ){
-            throw new InvalidRequestException("ERROR: StatusID must be listed");
         }
         if(reimbImport.getTypeID() == null || reimbImport.getTypeID().length() <= 0 ){
             throw new InvalidRequestException("ERROR: TypeID must be listed");
