@@ -80,4 +80,26 @@ public class ReimbursementService {
         
         return result;
     }
+    
+    public ReimbursementDTO getIdentifiedReimb(int reimbIDImport){
+        //filter invalid usernames
+        if(reimbIDImport <= 0){
+            throw new InvalidRequestException(
+                    "ERROR: ReimbusementeID number must be greater than 0");
+        }
+        
+        try{
+            Reimbursement target = reimbursementDAO.getSingleByReimbID(reimbIDImport).orElse(null); 
+            if (target == null){
+                throw new IllegalArgumentException("ERROR: Reimbursement not found");
+            }
+            
+            ReimbursementDTO result = new ReimbursementDTO(target);
+            return result;
+        }catch(IllegalArgumentException e){
+            throw new InvalidRequestException("ERROR: searched reimbursement was not found");
+        }
+        
+        
+    }
 }//end ReimbursementService class

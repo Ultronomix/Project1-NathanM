@@ -167,5 +167,20 @@ public class ReimbursementDAO {
          return ownedReimb;
     }//end of getOwnedPending method
     
-    
+    public Optional<Reimbursement> getSingleByReimbID(int reimbIDImport){
+        String sql = "WHERE reimb_id = ? ";
+        
+        
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect + sql);
+            pstmt.setObject(1, reimbIDImport);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+            
+        }catch(SQLException e){
+            e.printStackTrace();
+            throw new DataSourceException (e);
+        }
+         
+    }//end of getSingleByReimbID
 }//end of ReimbursementDAO class

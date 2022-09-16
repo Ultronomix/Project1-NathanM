@@ -30,6 +30,7 @@ public class ReimbursementServlet extends HttpServlet{
     //      get owned reimbursements(user_ID matches author_id),
     //      get all reimbursements(require not employee),
     //      get pending reimbursements(require not employee)
+    //      get identified single reimbursement(require match employee or not employee)
     //TODO complete doGet method
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
@@ -49,41 +50,70 @@ public class ReimbursementServlet extends HttpServlet{
         //Gathering submitted username to be verified for authorization
         String usernameSubmission = req.getParameter("username");
         String searchStatus = req.getParameter("status");
+        String searchIDField = req.getParameter("searchID");
+        int searchID = 0;
+        
+        //avoid null field errors on mothod logic below
+        if(usernameSubmission == null){
+            usernameSubmission = "";
+        }
         if(searchStatus == null){
             searchStatus = "";
+        }
+        if(searchIDField != null){
+            searchID = Integer.parseInt(searchIDField);
         }
         
         //userSession set in AuthenticationServlet which sets "authUser" after someone has logged in
         UserDTO requester = (UserDTO) userSession.getAttribute("authUser");
         
-        //Username verification logic: must either have Role of finance manager or admin  
-        //or authUser must match the username of user requested
-        if(requester.getRole().equals("employee") && !requester.getUsername().equals(usernameSubmission)){
-            resp.setStatus(403);
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, "ERROR 403: Authorization Insufficent to Access")));
-            return;
+        //skipping employee authorization if a single record is being serched for, will verify before displaying
+        if(searchID <=0){
+            //Username verification logic: must either have Role of finance manager or admin  
+            //or authUser must match the username of user requested
+            if(requester.getRole().equals("employee") && (!requester.getUsername().equals(usernameSubmission))){
+                resp.setStatus(403);
+                resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, "ERROR 403: Authorization Insufficent to Access")));
+                return;
+            }
         }
         
         try{
             //if logic for which doGet method call is needed
+            
+            //get identified single reimbursement(require a searchable ReimbursementID)
+            if(searchID > 0){
+                ReimbursementDTO specificReimbursement = reimbursementServ.getIdentifiedReimb(searchID);
+                
+                if(!requester.getRole().equals("employee") || requester.getUserID() == specificReimbursement.getAuthorID()){
+                    resp.getWriter().write(jsonMapper.writeValueAsString(specificReimbursement));
+                }else{
+                    resp.getWriter().write(jsonMapper.writeValueAsString("You do not have access to the details of the searched Reimbursement"));
+                }
+                
+            }else
+            
             //get owned pending reimbursements (user_ID matches author_id with pending condition)
             if(requester.getRole().equals("employee") && requester.getUsername().equals(usernameSubmission) && searchStatus.equals("pending")){
                 List<ReimbursementDTO> ownedReimb = reimbursementServ.getOwnedPendingReimbs(usernameSubmission);
                 //Translates List to json and sends back to server
                 resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
             }else
+                
             //get owned reimbursements(user_ID matches author_id)
             if(requester.getRole().equals("employee") && requester.getUsername().equals(usernameSubmission)){
                 List<ReimbursementDTO> ownedReimb = reimbursementServ.getOwnedReimbs(usernameSubmission);
                 //Translates List to json and sends back to server
                 resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
             }else
+                
             //get pending reimbursements(require not employee)
             if(!requester.getRole().equals("employee") && searchStatus.equals("pending")){
                 List<ReimbursementDTO> ownedReimb = reimbursementServ.getAllPendingReimbs(usernameSubmission);
                 //Translates List to json and sends back to server
                 resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));
             }else 
+                
             //get all reimbursements(require not employee)
             if(!requester.getRole().equals("employee")){
                 List<ReimbursementDTO> ownedReimb = reimbursementServ.getAllReimbs(usernameSubmission);
