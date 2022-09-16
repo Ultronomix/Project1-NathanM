@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import ultranomics.enterprisefoundationsproject.DTOs.ReimbursementDTO;
 import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
 import ultranomics.enterprisefoundationsproject.ErrorReport;
+import ultranomics.enterprisefoundationsproject.dataalteration.ReimbursementApproveOrDenyAlteration;
 import ultranomics.enterprisefoundationsproject.datainsertion.NewReimbursementInsertion;
 import ultranomics.enterprisefoundationsproject.exceptiontemplates.DataSourceException;
 import ultranomics.enterprisefoundationsproject.exceptiontemplates.InvalidRequestException;
@@ -182,12 +183,50 @@ public class ReimbursementServlet extends HttpServlet{
     }//end of doPost method
     
     //doPut:approve/deny single reimbursement(requires Finance Manager/Admin and the ReimbID)
-    //      update owned reimbursement (owned and still pending)  
-    //TODO complete doPut method
+    //      [TODO]update owned reimbursement (owned and still pending)  
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         ObjectMapper jsonMapper = new ObjectMapper();
         resp.setContentType("application/json");
+        
+        //HTTPS session (might not exist)
+        HttpSession userSession = req.getSession(false);
+        
+        //Confirm user is logged in
+        if(userSession == null){
+            resp.setStatus(401);
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(401, "ERROR 401: Authorization Missing")));
+            return;
+        }
+        
+        //userSession set in AuthenticationServlet which sets "authUser" after someone has logged in
+        UserDTO requester = (UserDTO) userSession.getAttribute("authUser");
+        
+        //block employees from approving reimbursements
+        if(requester.getRole().equals("employee")){
+            String response = "Employees may not approve or deny reimbursements. Contact an Admin or Finance Manager";
+            resp.getWriter().write(jsonMapper.writeValueAsString(response));
+            return;
+        }
+        
+        
+        try{
+            ReimbursementApproveOrDenyAlteration requestBody = jsonMapper.readValue(req.getInputStream(), ReimbursementApproveOrDenyAlteration.class);
+            ReimbursementDTO responseBody = reimbursementServ.updateStatusApproveOrDeny(requestBody);
+            resp.getWriter().write(jsonMapper.writeValueAsString(responseBody));
+            
+            
+        }catch (InvalidRequestException | JsonMappingException e) {
+            //TODO add logging based on 9/9 lecture
+            resp.setStatus(400); // BAD REQUEST
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(400, e.getMessage())));
+
+        } catch (DataSourceException e) {
+            //TODO add logging based on 9/9 lecture
+            resp.setStatus(500); // INTERNAL SERVER ERROR; general error indicating a problem with the server
+            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));
+
+        }
     }//end of doPut method
     
 }

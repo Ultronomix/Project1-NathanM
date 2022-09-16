@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ultranomics.enterprisefoundationsproject.DAOs.ReimbursementDAO;
 import ultranomics.enterprisefoundationsproject.DTOs.ReimbursementDTO;
+import ultranomics.enterprisefoundationsproject.dataalteration.ReimbursementApproveOrDenyAlteration;
 import ultranomics.enterprisefoundationsproject.datainsertion.NewReimbursementInsertion;
 import ultranomics.enterprisefoundationsproject.datamodels.Reimbursement;
 import ultranomics.enterprisefoundationsproject.exceptiontemplates.InvalidRequestException;
@@ -99,7 +100,33 @@ public class ReimbursementService {
         }catch(IllegalArgumentException e){
             throw new InvalidRequestException("ERROR: searched reimbursement was not found");
         }
+    }//end of getIdentifiedReimb
+    
+    public ReimbursementDTO updateStatusApproveOrDeny (ReimbursementApproveOrDenyAlteration alterationImport){
+        if(alterationImport == null){
+            throw new InvalidRequestException("ERROR: can not update with null payload");
+        }
         
+        try{
+            //attempt to find the reimbursement to be approved/denied
+            Reimbursement target = reimbursementDAO.getSingleByReimbID(alterationImport.getReimbursementID()).orElse(null); 
+            
+            
+            if (target == null){//can not update a reimbursement that is not in the database
+                throw new InvalidRequestException("ERROR: Reimbursement not found, could not alter");
+            }else if (!target.getStatusID().equals("1")){//can only update a reimbursement that is in pending status
+                throw new InvalidRequestException("ERROR: Reimbursement is not pending approval / rejection");
+            }else{
+                target = reimbursementDAO.updateReimbursementStatus(alterationImport.getReimbursementID(), alterationImport.getStatusUpdate()).orElse(null);
+            }
+            
+            
+            
+            ReimbursementDTO result = new ReimbursementDTO(target);
+            return result;
+        }catch(IllegalArgumentException e){
+            throw new InvalidRequestException("ERROR: searched reimbursement was not found");
+        }
         
     }
 }//end ReimbursementService class

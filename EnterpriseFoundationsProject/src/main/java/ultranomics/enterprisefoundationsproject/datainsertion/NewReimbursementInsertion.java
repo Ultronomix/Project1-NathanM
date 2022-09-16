@@ -4,8 +4,7 @@ import ultranomics.enterprisefoundationsproject.datamodels.Reimbursement;
 import ultranomics.enterprisefoundationsproject.datamodels.Request;
 
 public class NewReimbursementInsertion implements Request<Reimbursement>{
-    //TODO mirror NewUserInsertion as appropriate 
-    
+        
     private double amount;
     private String timeSub;
     private String description;

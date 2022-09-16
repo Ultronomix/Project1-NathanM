@@ -79,9 +79,9 @@ public class ReimbursementDAO {
         List<Reimbursement> ownedReimb = new ArrayList<>();
         
         try(Connection conn =ConnectionFactory.getInstance().getConnection()){
+            String sql = "ORDER BY reimb_id ";
             
-            
-            PreparedStatement pstmt = conn.prepareStatement(baseSelect);
+            PreparedStatement pstmt = conn.prepareStatement(baseSelect + sql);
             ResultSet rs = pstmt.executeQuery();
              
             ownedReimb = mapResultSet(rs);
@@ -168,12 +168,12 @@ public class ReimbursementDAO {
     }//end of getOwnedPending method
     
     public Optional<Reimbursement> getSingleByReimbID(int reimbIDImport){
-        String sql = "WHERE reimb_id = ? ";
+        String sql = "WHERE reimb_id = ? ORDER BY reimb_id ";
         
         
         try(Connection conn = ConnectionFactory.getInstance().getConnection()){
             PreparedStatement pstmt = conn.prepareStatement(baseSelect + sql);
-            pstmt.setObject(1, reimbIDImport);
+            pstmt.setInt(1, reimbIDImport);
             ResultSet rs = pstmt.executeQuery();
             return mapResultSet(rs).stream().findFirst();
             
@@ -183,4 +183,34 @@ public class ReimbursementDAO {
         }
          
     }//end of getSingleByReimbID
+    
+    public Optional<Reimbursement> updateReimbursementStatus(int reimbIDImport, boolean newStatusImport){
+        String sql = "UPDATE ers_reimbursements SET status_id = ? WHERE reimb_id = ? "; 
+        String sql02 = "WHERE reimb_id = ? ";
+        
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+            //reformatting update from boolean to int for database
+            int statusUpdate;
+            if(newStatusImport){
+                statusUpdate = 3;//if true then approved(status code 3)
+            }else{
+                statusUpdate = 2;//if false then denied(status code 2)
+            }
+            
+            //updating the database
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, statusUpdate);
+            pstmt.setInt(2, reimbIDImport);
+            pstmt.executeUpdate();
+            
+            //prepping query to confirm update
+            pstmt = conn.prepareStatement(baseSelect + sql02);
+            pstmt.setInt(1, reimbIDImport);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+        }catch(SQLException e){
+            e.printStackTrace();
+            throw new DataSourceException (e);
+        }
+    }
 }//end of ReimbursementDAO class
