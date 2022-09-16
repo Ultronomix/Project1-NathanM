@@ -6,7 +6,7 @@ import ultranomics.enterprisefoundationsproject.datamodels.User;
 
 public class UserDTO implements Serializable{
     
-    private String userID;
+    private int userID;
     private String username;
     private String email;
     private String givenName;
@@ -32,11 +32,11 @@ public class UserDTO implements Serializable{
         this.active = subject.getIsActive();
     }
     
-    public String getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 
@@ -92,13 +92,13 @@ public class UserDTO implements Serializable{
     @Override
     public String toString() {
         return "UserDTO{"+
-                "\nuserID='"+userID+'\''+
-                ", \nusername=" + username +'\''+ 
-                ", \nemail=" + email +'\''+ 
-                ", \ngivenName=" + givenName +'\''+ 
-                ", \nsurname=" + surname +'\''+ 
-                ", \nrole=" + role +'\''+ 
-                ", \nactive=" + active +'\''+ 
+                "\nuserID= "+userID+
+                ", \nusername= " + username + 
+                ", \nemail= " + email +
+                ", \ngivenName= " + givenName +
+                ", \nsurname= " + surname +
+                ", \nrole= " + role +
+                ", \nactive= " + active + 
                 '}';
     }
 
