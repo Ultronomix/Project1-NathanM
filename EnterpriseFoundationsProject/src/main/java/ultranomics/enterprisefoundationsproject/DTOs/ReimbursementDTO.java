@@ -8,7 +8,7 @@ public class ReimbursementDTO {
     private String timeSub;
     private String timeResolved;
     private String description;
-    private String authorID;
+    private int authorID;
     private String resolverID;
     private String statusID;
     private String typeID;    
@@ -72,11 +72,11 @@ public class ReimbursementDTO {
         this.description = description;
     }
 
-    public String getAuthorID() {
+    public int getAuthorID() {
         return authorID;
     }
 
-    public void setAuthorID(String authorID) {
+    public void setAuthorID(int authorID) {
         this.authorID = authorID;
     }
 
@@ -107,14 +107,14 @@ public class ReimbursementDTO {
     @Override
     public String toString() {
         return "ReimbursementDTO{" + 
-                "\nreimbID=" + reimbID + 
-                ", \namount=" + amount + 
-                ", \ntimeSub=" + timeSub + 
-                ", \ntimeResolved=" + timeResolved + 
-                ", \ndescription=" + description +
-                ", \nauthorID=" + authorID + 
-                ", \nresolverID=" + resolverID + 
-                ", \nstatusID=" + statusID + 
-                ", \ntypeID=" + typeID + '}';
+                "\nreimbID= " + reimbID + 
+                ", \namount= " + amount + 
+                ", \ntimeSub= " + timeSub + 
+                ", \ntimeResolved= " + timeResolved + 
+                ", \ndescription= " + description +
+                ", \nauthorID= " + authorID + 
+                ", \nresolverID= " + resolverID + 
+                ", \nstatusID= " + statusID + 
+                ", \ntypeID= " + typeID + '}';
     }
 }
