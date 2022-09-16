@@ -6,7 +6,7 @@ public class Reimbursement {
     private String timeSub;
     private String timeResolved;
     private String description;
-    private String authorID;
+    private int authorID;
     private String resolverID;
     private String statusID;
     private String typeID;
@@ -51,11 +51,11 @@ public class Reimbursement {
         this.description = description;
     }
 
-    public String getAuthorID() {
+    public int getAuthorID() {
         return authorID;
     }
 
-    public void setAuthorID(String authorID) {
+    public void setAuthorID(int authorID) {
         this.authorID = authorID;
     }
 
