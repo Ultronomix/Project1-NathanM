@@ -124,19 +124,17 @@ public class ReimbursementServlet extends HttpServlet{
             return;
         }
         
-        //Gathering submitted username to be verified for authorization
-        String usernameSubmission = req.getParameter("username");
+        //userSession set in AuthenticationServlet which sets "authUser" after someone has logged in
+        UserDTO requester = (UserDTO) userSession.getAttribute("authUser");
         
-        if(!usernameSubmission.equals(userSession.getAttribute("authUser"))){
-            resp.setStatus(403);
-            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, "ERROR 403: Reimbusement Author does not match logged in user")));
-        }
         
         try{
             //Servlet layer new Reimbursement creation
             //reimbursementServ.register is passed reimbusement to insert, will return with 
             //ResourceCreationDTO to confirm new User was created
             NewReimbursementInsertion requestBody = jsonMapper.readValue(req.getInputStream(), NewReimbursementInsertion.class);
+            //setting Auth_ID to match sesssion so that no one can submit impersonated reimbursement requests
+            requestBody.setAuthorID(requester.getUserID());
             ReimbursementDTO responseBody = reimbursementServ.generate(requestBody);
             resp.getWriter().write(jsonMapper.writeValueAsString(responseBody));
             
