@@ -35,7 +35,7 @@ public class AuthenticationServiceTest {
         
         //arrange
         CredentialsDTO creds = new CredentialsDTO("valid", "credentials");
-        User dummy = new User("1", "dummyUsername", "dummy@mock.com", "dummyPass", "Dummy", "Name", true, "3");
+        User dummy = new User(1, "dummyUsername", "dummy@mock.com", "dummyPass", "Dummy", "Name", true, "3");
         
         UserDTO expected = new UserDTO(dummy);
         
