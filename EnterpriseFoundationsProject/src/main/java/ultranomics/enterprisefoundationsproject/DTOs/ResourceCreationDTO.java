@@ -26,7 +26,7 @@ public class ResourceCreationDTO {
     @Override
     public String toString(){
         return "ResourceCreationDTO{" + 
-                "resourceID='" + resourceID + '\'' +
+                "resourceID= " + resourceID + 
                 '}';
     }
 }
