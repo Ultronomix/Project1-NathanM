@@ -1,7 +1,7 @@
 package ultranomics.enterprisefoundationsproject.datamodels;
 
 public class User {
-    private String userID;
+    private int userID;
     private String username;
     private String email;
     private String password;
@@ -15,7 +15,7 @@ public class User {
         super();
     }
 
-    public User(String userID, String username, String email, String password, String givenName, String surname, boolean isActive, String role) {
+    public User(int userID, String username, String email, String password, String givenName, String surname, boolean isActive, String role) {
         this.userID = userID;
         this.username = username;
         this.email = email;
@@ -26,11 +26,11 @@ public class User {
         this.role = role;
     }
     
-    public String getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 
