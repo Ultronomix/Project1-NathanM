@@ -29,7 +29,7 @@ public class ReimbursementDAO {
             reimbursement.setAmount(rs.getDouble("AMOUNT"));
             reimbursement.setTimeSub(rs.getString("SUBMITTED"));
             reimbursement.setDescription(rs.getString("DESCRIPTION"));
-            reimbursement.setAuthorID(rs.getString("AUTHOR_ID"));
+            reimbursement.setAuthorID(rs.getInt("AUTHOR_ID"));
             reimbursement.setStatusID(rs.getString("STATUS_ID"));
             reimbursement.setTypeID(rs.getString("TYPE_ID"));
             
@@ -45,7 +45,7 @@ public class ReimbursementDAO {
         String sql = 
                 "INSERT INTO ERS_REIMBURSEMENTS (AMOUNT, SUBMITTED, DESCRIPTION, AUTHOR_ID, STATUS_ID, TYPE_ID) "+
                 "VALUES "+
-                "(?, '?', '?', ?, ?, ?)";
+                "(?, TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS'), ?, ?, ?, ?)";
         
         try(Connection conn = ConnectionFactory.getInstance().getConnection()){
                         
@@ -53,16 +53,16 @@ public class ReimbursementDAO {
             pstmt.setDouble(1, reimbImport.getAmount());
             pstmt.setString(2, reimbImport.getTimeSub());
             pstmt.setString(3, reimbImport.getDescription());
-            pstmt.setString(4, reimbImport.getAuthorID());
+            pstmt.setInt(4, reimbImport.getAuthorID());
             pstmt.setString(5, reimbImport.getStatusID());
             pstmt.setString(6, reimbImport.getTypeID());
             pstmt.executeUpdate();
             
             //prepping query to confirm update
             sql = baseSelect +
-                  "WHERE AUTHOR_ID = '?' AND SUBMITTED = '?'";
+                  "WHERE AUTHOR_ID = ? AND SUBMITTED = TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS')";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, reimbImport.getAuthorID());
+            pstmt.setInt(1, reimbImport.getAuthorID());
             pstmt.setString(2, reimbImport.getTimeSub());
             ResultSet rs = pstmt.executeQuery();
             return mapResultSet(rs).stream().findFirst();
@@ -121,7 +121,7 @@ public class ReimbursementDAO {
     
     
     public List<Reimbursement> getOwned(String usernameImport){
-        String sql = "WHERE AUTHOR_ID = '?' "+
+        String sql = "WHERE AUTHOR_ID = ? "+
                      "ORDER BY REIMB_ID ";
         
         List<Reimbursement> ownedReimb = new ArrayList<>();
@@ -145,7 +145,7 @@ public class ReimbursementDAO {
     }//end of getOwned method
     
     public List<Reimbursement> getOwnedPending(String usernameImport){
-        String sql = "WHERE AUTHOR_ID = '?' AND WHERE STATUS_ID = '1' "+
+        String sql = "WHERE AUTHOR_ID = ? AND WHERE STATUS_ID = '1' "+
                      "ORDER BY REIMB_ID ";
         
         List<Reimbursement> ownedReimb = new ArrayList<>();
