@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReimbursementDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EnterpriseFoundationsProject</a> &gt; <a href="index.source.html" class="el_package">ultranomics.enterprisefoundationsproject.DTOs</a> &gt; <span class="el_source">ReimbursementDTO.java</span></div><h1>ReimbursementDTO.java</h1><pre class="source lang-java linenums">package ultranomics.enterprisefoundationsproject.DTOs;
+
+import ultranomics.enterprisefoundationsproject.datamodels.Reimbursement;
+
+public class ReimbursementDTO {
+    private String reimbID;
+    private double amount;
+    private String timeSub;
+    private String timeResolved;
+    private String description;
+    private String authorID;
+    private String resolverID;
+    private String statusID;
+    private String typeID;    
+
+    //make Jackson happy with default constructor
+    public ReimbursementDTO(){
+<span class="nc" id="L18">        super();</span>
+<span class="nc" id="L19">    }</span>
+    
+<span class="nc" id="L21">    public ReimbursementDTO(Reimbursement reimbImport) {</span>
+<span class="nc" id="L22">        this.reimbID = reimbImport.getReimbID();</span>
+<span class="nc" id="L23">        this.amount = reimbImport.getAmount();</span>
+<span class="nc" id="L24">        this.timeSub = reimbImport.getTimeSub();</span>
+<span class="nc" id="L25">        this.timeResolved = reimbImport.getTimeResolved();</span>
+<span class="nc" id="L26">        this.description = reimbImport.getDescription();</span>
+<span class="nc" id="L27">        this.authorID = reimbImport.getAuthorID();</span>
+<span class="nc" id="L28">        this.resolverID = reimbImport.getResolverID();</span>
+<span class="nc" id="L29">        this.statusID = reimbImport.getStatusID();</span>
+<span class="nc" id="L30">        this.typeID = reimbImport.getTypeID();</span>
+        
+<span class="nc" id="L32">    }</span>
+
+    //getters and setters
+    public String getReimbID() {
+<span class="nc" id="L36">        return reimbID;</span>
+    }
+
+    public void setReimbID(String reimbID) {
+<span class="nc" id="L40">        this.reimbID = reimbID;</span>
+<span class="nc" id="L41">    }</span>
+
+    public double getAmount() {
+<span class="nc" id="L44">        return amount;</span>
+    }
+
+    public void setAmount(double amount) {
+<span class="nc" id="L48">        this.amount = amount;</span>
+<span class="nc" id="L49">    }</span>
+
+    public String getTimeSub() {
+<span class="nc" id="L52">        return timeSub;</span>
+    }
+
+    public void setTimeSub(String timeSub) {
+<span class="nc" id="L56">        this.timeSub = timeSub;</span>
+<span class="nc" id="L57">    }</span>
+
+    public String getTimeResolved() {
+<span class="nc" id="L60">        return timeResolved;</span>
+    }
+
+    public void setTimeResolved(String timeResolved) {
+<span class="nc" id="L64">        this.timeResolved = timeResolved;</span>
+<span class="nc" id="L65">    }</span>
+
+    public String getDescription() {
+<span class="nc" id="L68">        return description;</span>
+    }
+
+    public void setDescription(String description) {
+<span class="nc" id="L72">        this.description = description;</span>
+<span class="nc" id="L73">    }</span>
+
+    public String getAuthorID() {
+<span class="nc" id="L76">        return authorID;</span>
+    }
+
+    public void setAuthorID(String authorID) {
+<span class="nc" id="L80">        this.authorID = authorID;</span>
+<span class="nc" id="L81">    }</span>
+
+    public String getResolverID() {
+<span class="nc" id="L84">        return resolverID;</span>
+    }
+
+    public void setResolverID(String resolverID) {
+<span class="nc" id="L88">        this.resolverID = resolverID;</span>
+<span class="nc" id="L89">    }</span>
+
+    public String getStatusID() {
+<span class="nc" id="L92">        return statusID;</span>
+    }
+
+    public void setStatusID(String statusID) {
+<span class="nc" id="L96">        this.statusID = statusID;</span>
+<span class="nc" id="L97">    }</span>
+
+    public String getTypeID() {
+<span class="nc" id="L100">        return typeID;</span>
+    }
+
+    public void setTypeID(String typeID) {
+<span class="nc" id="L104">        this.typeID = typeID;</span>
+<span class="nc" id="L105">    }</span>
+    
+    @Override
+    public String toString() {
+<span class="nc" id="L109">        return &quot;ReimbursementDTO{&quot; + </span>
+                &quot;\nreimbID= &quot; + reimbID + 
+                &quot;, \namount= &quot; + amount + 
+                &quot;, \ntimeSub= &quot; + timeSub + 
+                &quot;, \ntimeResolved= &quot; + timeResolved + 
+                &quot;, \ndescription= &quot; + description +
+                &quot;, \nauthorID= &quot; + authorID + 
+                &quot;, \nresolverID= &quot; + resolverID + 
+                &quot;, \nstatusID= &quot; + statusID + 
+                &quot;, \ntypeID= &quot; + typeID + '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

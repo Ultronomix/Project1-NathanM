@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserServlet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EnterpriseFoundationsProject</a> &gt; <a href="index.source.html" class="el_package">ultranomics.enterprisefoundationsproject.servlets</a> &gt; <span class="el_source">UserServlet.java</span></div><h1>UserServlet.java</h1><pre class="source lang-java linenums">package ultranomics.enterprisefoundationsproject.servlets;
+
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
+import ultranomics.enterprisefoundationsproject.ErrorReport;
+import ultranomics.enterprisefoundationsproject.datainsertion.NewUserInsertion;
+import ultranomics.enterprisefoundationsproject.services.UserService;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.ResourceNotFoundException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.InvalidRequestException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.DataSourceException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.ResourcePersistenceException;
+
+
+public class UserServlet extends HttpServlet{
+    
+    private final UserService userServ;
+    
+<span class="nc" id="L29">    public UserServlet(UserService importUserServ){</span>
+<span class="nc" id="L30">        this.userServ = importUserServ;</span>
+<span class="nc" id="L31">    }</span>
+    
+    //doGet:get all users, get single user by username matching session ID
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+<span class="nc" id="L36">        ObjectMapper jsonMapper = new ObjectMapper();</span>
+<span class="nc" id="L37">        resp.setContentType(&quot;application/json&quot;);</span>
+        
+        //HTTPS session (might not exist)
+<span class="nc" id="L40">        HttpSession userSession = req.getSession(false);</span>
+        
+        //Confirm user is logged in
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if(userSession == null){</span>
+<span class="nc" id="L44">            resp.setStatus(401);</span>
+<span class="nc" id="L45">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(401, &quot;ERROR 401: Authorization Missing&quot;)));</span>
+<span class="nc" id="L46">            return;</span>
+        }
+        
+        //Gathering submitted username to be verified for authorization
+<span class="nc" id="L50">        String usernameSubmission = req.getParameter(&quot;username&quot;);</span>
+        
+        //userSession set in AuthenticationServlet which sets &quot;authUser&quot; after someone has logged in
+<span class="nc" id="L53">        UserDTO requester = (UserDTO) userSession.getAttribute(&quot;authUser&quot;);</span>
+        
+        //Username verification logic: must either have Role admin  
+        //or authUser must match the username of user requested
+<span class="nc bnc" id="L57" title="All 4 branches missed.">        if(!requester.getRole().equals(&quot;admin&quot;) &amp;&amp; !requester.getUsername().equals(usernameSubmission)){</span>
+<span class="nc" id="L58">            resp.setStatus(403);</span>
+<span class="nc" id="L59">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, &quot;ERROR 403: Authorization Insufficent to Access&quot;)));</span>
+        }else{
+            try{
+                //logic to determine if one user is requested or all users
+<span class="nc bnc" id="L63" title="All 2 branches missed.">                if(usernameSubmission == null){</span>
+                    //list of all UserDTOs pulled from Service Layer 
+<span class="nc" id="L65">                    List&lt;UserDTO&gt; allUsers = userServ.getAllUsers();</span>
+                    //Custom Header added
+<span class="nc" id="L67">                    resp.addHeader(&quot;Header name&quot;, &quot;Header body&quot;);</span>
+                    //Translates List to json and sends back to server
+<span class="nc" id="L69">                    resp.getWriter().write(jsonMapper.writeValueAsString(allUsers));</span>
+<span class="nc" id="L70">                }else{</span>
+                    //single UserDTO pulled from Service Layer matching submitted username
+<span class="nc" id="L72">                    UserDTO foundUser = userServ.getUserByUsername(usernameSubmission);</span>
+                    //Translates single UserDTO to json and sends to server
+<span class="nc" id="L74">                    resp.getWriter().write(jsonMapper.writeValueAsString(foundUser));</span>
+                }
+
+<span class="nc" id="L77">            }catch(InvalidRequestException e){</span>
+                //TODO add logging based on 9/9 lecture
+<span class="nc" id="L79">                resp.setStatus(400);</span>
+<span class="nc" id="L80">                resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(400, e.getMessage())));</span>
+<span class="nc" id="L81">            }catch(ResourceNotFoundException e){</span>
+                //TODO add logging based on 9/9 lecture
+<span class="nc" id="L83">                resp.setStatus(404);</span>
+<span class="nc" id="L84">                resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(404, e.getMessage())));</span>
+<span class="nc" id="L85">            }catch(DataSourceException e){</span>
+                //TODO add logging based on 9/9 lecture
+<span class="nc" id="L87">                resp.setStatus(500);</span>
+<span class="nc" id="L88">                resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));</span>
+<span class="nc" id="L89">            }</span>
+        }
+        
+<span class="nc" id="L92">    }//end doGet method</span>
+    
+    //doPost: create new user
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+<span class="nc" id="L97">        ObjectMapper jsonMapper = new ObjectMapper();</span>
+<span class="nc" id="L98">        resp.setContentType(&quot;application/json&quot;);</span>
+
+        try {
+            //Servlet layer new User creation
+            //userServ.register is passed user to insert, will return with 
+            //ResourceCreationDTO to confirm new User was created
+<span class="nc" id="L104">            NewUserInsertion requestBody = jsonMapper.readValue(req.getInputStream(), NewUserInsertion.class);</span>
+<span class="nc" id="L105">            UserDTO responseBody = userServ.register(requestBody);</span>
+<span class="nc" id="L106">            resp.getWriter().write(jsonMapper.writeValueAsString(responseBody));</span>
+
+<span class="nc" id="L108">        } catch (InvalidRequestException | JsonMappingException e) {</span>
+            //TODO add logging based on 9/9 lecture
+<span class="nc" id="L110">            resp.setStatus(400); // BAD REQUEST</span>
+<span class="nc" id="L111">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(400, e.getMessage())));</span>
+
+<span class="nc" id="L113">        } catch (ResourcePersistenceException e) {</span>
+            //TODO add logging based on 9/9 lecture
+<span class="nc" id="L115">            resp.setStatus(409); // CONFLICT; indicates that the provided resource could not be saved without conflicting with other data</span>
+<span class="nc" id="L116">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(409, e.getMessage())));</span>
+
+<span class="nc" id="L118">        } catch (DataSourceException e) {</span>
+            //TODO add logging based on 9/9 lecture
+<span class="nc" id="L120">            resp.setStatus(500); // INTERNAL SERVER ERROR; general error indicating a problem with the server</span>
+<span class="nc" id="L121">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));</span>
+
+<span class="nc" id="L123">        }</span>
+<span class="nc" id="L124">    }//end doPost method</span>
+    
+    //doPut:update existing user(require admin log in)
+    //TODO complete doPut method 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+<span class="nc" id="L130">        ObjectMapper jsonMapper = new ObjectMapper();</span>
+<span class="nc" id="L131">        resp.setContentType(&quot;application/json&quot;);</span>
+        
+        
+<span class="nc" id="L134">    }</span>
+    
+    //doDelete:update is_active to false(target by username)
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+<span class="nc" id="L139">        ObjectMapper jsonMapper = new ObjectMapper();</span>
+<span class="nc" id="L140">        resp.setContentType(&quot;application/json&quot;);</span>
+        
+        //HTTPS session (might not exist)
+<span class="nc" id="L143">        HttpSession userSession = req.getSession(false);</span>
+        
+        //Confirm user is logged in
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        if(userSession == null){</span>
+<span class="nc" id="L147">            resp.setStatus(401);</span>
+<span class="nc" id="L148">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(401, &quot;ERROR 401: Authorization Missing&quot;)));</span>
+<span class="nc" id="L149">            return;</span>
+        }
+        
+        //Gathering submitted username to be verified for authorization
+<span class="nc" id="L153">        String usernameSubmission = req.getParameter(&quot;username&quot;);</span>
+        
+        //userSession set in AuthenticationServlet which sets &quot;authUser&quot; after someone has logged in
+<span class="nc" id="L156">        UserDTO requester = (UserDTO) userSession.getAttribute(&quot;authUser&quot;);</span>
+        
+        //Username verification logic: must either have Role admin  
+        //or authUser must match the username of user requested
+<span class="nc bnc" id="L160" title="All 4 branches missed.">        if(!requester.getRole().equals(&quot;admin&quot;) &amp;&amp; !requester.getUsername().equals(usernameSubmission)){</span>
+<span class="nc" id="L161">            resp.setStatus(403);</span>
+<span class="nc" id="L162">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, &quot;ERROR 403: Authorization Insufficent to Access&quot;)));</span>
+        }
+        
+        try{
+<span class="nc" id="L166">            UserDTO deactivatedUser = userServ.deactivate(usernameSubmission); </span>
+            //Translates deactivated UserDTO to json and sends to server to show active status as false
+<span class="nc" id="L168">            resp.getWriter().write(jsonMapper.writeValueAsString(deactivatedUser));</span>
+<span class="nc" id="L169">        }catch(DataSourceException e){</span>
+            //TODO add logging based on 9/9 lecture
+<span class="nc" id="L171">            resp.setStatus(500);</span>
+<span class="nc" id="L172">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));</span>
+<span class="nc" id="L173">        }</span>
+<span class="nc" id="L174">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

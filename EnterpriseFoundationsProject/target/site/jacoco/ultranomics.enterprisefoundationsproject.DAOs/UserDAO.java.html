@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EnterpriseFoundationsProject</a> &gt; <a href="index.source.html" class="el_package">ultranomics.enterprisefoundationsproject.DAOs</a> &gt; <span class="el_source">UserDAO.java</span></div><h1>UserDAO.java</h1><pre class="source lang-java linenums">package ultranomics.enterprisefoundationsproject.DAOs;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import ultranomics.enterprisefoundationsproject.datainsertion.NewUserInsertion;
+import ultranomics.enterprisefoundationsproject.datamodels.User;
+import ultranomics.enterprisefoundationsproject.datasource.ConnectionFactory;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.DataSourceException;
+
+<span class="nc" id="L20">public class UserDAO {</span>
+<span class="nc" id="L21">    private final String baseSelect = &quot;SELECT EU.user_id, EU.username, EU.email, EU.given_name, EU.surname, EU.is_active, EUR.role &quot; +</span>
+                                      &quot;FROM ERS_USERS EU &quot; +
+                                      &quot;JOIN ERS_USER_ROLES EUR &quot; +
+                                      &quot;ON EU.role_id = EUR.role_id &quot;;
+    
+    public List&lt;User&gt; getAllUsers(){
+<span class="nc" id="L27">         List&lt;User&gt; allUsers = new ArrayList&lt;&gt;();</span>
+         
+<span class="nc" id="L29">         try(Connection conn =ConnectionFactory.getInstance().getConnection()){</span>
+             
+<span class="nc" id="L31">            PreparedStatement pstmt = conn.prepareStatement(baseSelect+ &quot;ORDER BY EU.user_id&quot;);</span>
+<span class="nc" id="L32">            ResultSet rs = pstmt.executeQuery();</span>
+             
+<span class="nc" id="L34">            allUsers = mapResultSet(rs);</span>
+             
+<span class="nc" id="L36">         }catch(SQLException e){</span>
+            //TODO Log Exception
+<span class="nc" id="L38">            System.out.println(&quot;Error with ConnectionFactory&quot;);</span>
+<span class="nc" id="L39">            e.printStackTrace();</span>
+<span class="nc" id="L40">         }</span>
+         
+<span class="nc" id="L42">         return allUsers;</span>
+    }
+    
+    //might not need but not going to remove until sure 
+    //not currently used by Service Layer
+    public Optional&lt;User&gt; findUserByID(String idImport){
+<span class="nc" id="L48">        String sql = baseSelect + &quot;WHERE EU.user_id = ?&quot;;</span>
+        
+<span class="nc" id="L50">        try(Connection conn = ConnectionFactory.getInstance().getConnection()){</span>
+<span class="nc" id="L51">            PreparedStatement pstmt = conn.prepareStatement(sql);</span>
+<span class="nc" id="L52">            pstmt.setObject(1, idImport);</span>
+<span class="nc" id="L53">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc" id="L54">            return mapResultSet(rs).stream().findFirst();</span>
+            
+<span class="nc" id="L56">        }catch(SQLException e){</span>
+<span class="nc" id="L57">            e.printStackTrace();</span>
+<span class="nc" id="L58">            throw new DataSourceException (e);</span>
+        }
+    }//end findUserByID method
+    
+    public Optional&lt;User&gt; findUserByUsername(String usernameImport){
+<span class="nc" id="L63">        String sql = baseSelect + &quot;WHERE EU.username = ?&quot;;</span>
+        
+<span class="nc" id="L65">        try(Connection conn = ConnectionFactory.getInstance().getConnection()){</span>
+<span class="nc" id="L66">            PreparedStatement pstmt = conn.prepareStatement(sql);</span>
+<span class="nc" id="L67">            pstmt.setObject(1, usernameImport);</span>
+<span class="nc" id="L68">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc" id="L69">            return mapResultSet(rs).stream().findFirst();</span>
+            
+<span class="nc" id="L71">        }catch(SQLException e){</span>
+            //TODO Log Exception
+<span class="nc" id="L73">            e.printStackTrace();</span>
+<span class="nc" id="L74">            throw new DataSourceException (e);</span>
+        }
+    }//end findUserByUsername method
+    
+    public Optional&lt;User&gt; findUserByEmail(String emailImport){
+<span class="nc" id="L79">        String sql = baseSelect + &quot;WHERE EU.email = ?&quot;;</span>
+        
+<span class="nc" id="L81">        try(Connection conn = ConnectionFactory.getInstance().getConnection()){</span>
+<span class="nc" id="L82">            PreparedStatement pstmt = conn.prepareStatement(sql);</span>
+<span class="nc" id="L83">            pstmt.setObject(1, emailImport);</span>
+<span class="nc" id="L84">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc" id="L85">            return mapResultSet(rs).stream().findFirst();</span>
+            
+<span class="nc" id="L87">        }catch(SQLException e){</span>
+            //TODO Log Exception
+<span class="nc" id="L89">            e.printStackTrace();</span>
+<span class="nc" id="L90">            throw new DataSourceException (e);</span>
+        }
+    }//end findUserByEmail method
+    
+    
+    public Optional&lt;User&gt; createUser(NewUserInsertion userImport){
+<span class="nc" id="L96">        String sql = &quot;INSERT INTO ERS_USERS (username, email, password, given_name, surname, role_id) &quot;+</span>
+                &quot;VALUES (?, ?, ?, ?, ?, ?) &quot;;
+        
+<span class="nc" id="L99">        try(Connection conn = ConnectionFactory.getInstance().getConnection()){</span>
+            
+<span class="nc bnc" id="L101" title="All 2 branches missed.">            if(userImport.getRole().equalsIgnoreCase(&quot;admin&quot;)){</span>
+<span class="nc" id="L102">                userImport.setRole(&quot;1&quot;);</span>
+            }
+<span class="nc bnc" id="L104" title="All 2 branches missed.">            if(userImport.getRole().equalsIgnoreCase(&quot;finance manager&quot;)){</span>
+<span class="nc" id="L105">                userImport.setRole(&quot;2&quot;);</span>
+            }
+<span class="nc bnc" id="L107" title="All 2 branches missed.">            if(userImport.getRole().equalsIgnoreCase(&quot;employee&quot;)){</span>
+<span class="nc" id="L108">                userImport.setRole(&quot;3&quot;);</span>
+            }
+            
+<span class="nc" id="L111">            PreparedStatement pstmt = conn.prepareStatement(sql);</span>
+<span class="nc" id="L112">            pstmt.setString(1, userImport.getUsername());</span>
+<span class="nc" id="L113">            pstmt.setString(2, userImport.getEmail());</span>
+<span class="nc" id="L114">            pstmt.setString(3, userImport.getPassword());</span>
+<span class="nc" id="L115">            pstmt.setString(4, userImport.getGivenName());</span>
+<span class="nc" id="L116">            pstmt.setString(5, userImport.getSurname());</span>
+<span class="nc" id="L117">            pstmt.setString(6, userImport.getRole());</span>
+<span class="nc" id="L118">            pstmt.executeUpdate();</span>
+            
+            //prepping query to confirm update
+<span class="nc" id="L121">            sql = baseSelect +</span>
+                  &quot;WHERE EU.username = ?&quot;;
+<span class="nc" id="L123">            pstmt = conn.prepareStatement(sql);</span>
+<span class="nc" id="L124">            pstmt.setObject(1, userImport.getUsername());</span>
+<span class="nc" id="L125">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc" id="L126">            return mapResultSet(rs).stream().findFirst();</span>
+            
+<span class="nc" id="L128">        }catch(SQLException e){</span>
+            //TODO add error log per 9/9
+<span class="nc" id="L130">            e.printStackTrace();</span>
+<span class="nc" id="L131">            throw new DataSourceException (e);</span>
+        }
+    }//end of createUser method
+    
+    public boolean isUsernameTaken(String usernameImport){
+<span class="nc" id="L136">        return findUserByUsername(usernameImport).isPresent();</span>
+    }//end isUsernameFree method
+   
+    public boolean isEmailTaken(String emailImport){
+<span class="nc" id="L140">        return findUserByEmail(emailImport).isPresent();</span>
+    }//end isUsernameFree method
+    
+    public Optional&lt;User&gt; findUserByUsernameAndPassword(String usernameImport, String passwordImport){
+<span class="nc" id="L144">        String sql = baseSelect + &quot;WHERE EU.username = ? AND EU.password = ?&quot;;</span>
+        
+<span class="nc" id="L146">        try(Connection conn = ConnectionFactory.getInstance().getConnection()){</span>
+<span class="nc" id="L147">            PreparedStatement pstmt = conn.prepareStatement(sql);</span>
+<span class="nc" id="L148">            pstmt.setString(1, usernameImport);</span>
+<span class="nc" id="L149">            pstmt.setString(2, passwordImport);</span>
+<span class="nc" id="L150">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc" id="L151">            return mapResultSet(rs).stream().findFirst();</span>
+            
+<span class="nc" id="L153">        }catch(SQLException e){</span>
+            //TODO Log Exception
+<span class="nc" id="L155">            e.printStackTrace();</span>
+<span class="nc" id="L156">            throw new DataSourceException (e);</span>
+        }
+    }//end findByUsernameAndPassword method
+    
+    public Optional&lt;User&gt; deactivateUser(String usernameImport){
+<span class="nc" id="L161">        String sql = &quot;UPDATE ers_users SET is_active = false WHERE username = ?&quot;;</span>
+<span class="nc" id="L162">        try(Connection conn = ConnectionFactory.getInstance().getConnection()){</span>
+<span class="nc" id="L163">            PreparedStatement pstmt = conn.prepareStatement(sql);</span>
+<span class="nc" id="L164">            pstmt.setObject(1, usernameImport);</span>
+<span class="nc" id="L165">            pstmt.executeUpdate();</span>
+            
+            //prepping query to confirm update
+<span class="nc" id="L168">            sql = baseSelect +</span>
+                  &quot;WHERE EU.username = ?&quot;;
+<span class="nc" id="L170">            pstmt = conn.prepareStatement(sql);</span>
+<span class="nc" id="L171">            pstmt.setObject(1, usernameImport);</span>
+<span class="nc" id="L172">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc" id="L173">            return mapResultSet(rs).stream().findFirst();</span>
+            
+<span class="nc" id="L175">        }catch(SQLException e){</span>
+            //TODO Log Exception
+<span class="nc" id="L177">            e.printStackTrace();</span>
+<span class="nc" id="L178">            throw new DataSourceException (e);</span>
+        }
+        
+        
+    }//end deactivateUser method
+
+    //formats query results to array of table items
+    private List&lt;User&gt; mapResultSet(ResultSet rs) throws SQLException{
+<span class="nc" id="L186">        List&lt;User&gt; users = new ArrayList&lt;&gt;();</span>
+        
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        while(rs.next()){</span>
+<span class="nc" id="L189">            User user = new User();</span>
+            
+<span class="nc" id="L191">            user.setUserID(rs.getString(&quot;user_id&quot;));</span>
+<span class="nc" id="L192">            user.setUsername(rs.getString(&quot;username&quot;));</span>
+<span class="nc" id="L193">            user.setEmail(rs.getString(&quot;email&quot;));</span>
+<span class="nc" id="L194">            user.setPassword(&quot;********&quot;);</span>
+<span class="nc" id="L195">            user.setGivenName(rs.getString(&quot;given_name&quot;));</span>
+<span class="nc" id="L196">            user.setSurname(rs.getString(&quot;surname&quot;));</span>
+<span class="nc" id="L197">            user.setIsActive(rs.getBoolean(&quot;is_active&quot;));</span>
+<span class="nc" id="L198">            user.setRole(rs.getString(&quot;role&quot;));</span>
+<span class="nc" id="L199">            users.add(user);</span>
+<span class="nc" id="L200">        }</span>
+        
+<span class="nc" id="L202">        return users;</span>
+    }//end mapResultSet method
+    
+    //TODO update logging based on 9/9 lecture
+    public void log(String level, String message){
+        try{
+<span class="nc" id="L208">            File logFile = new File(&quot;logs/app.log&quot;);</span>
+<span class="nc" id="L209">            logFile.createNewFile();</span>
+<span class="nc" id="L210">            BufferedWriter logWriter = new BufferedWriter(new FileWriter(logFile));</span>
+<span class="nc" id="L211">            logWriter.write(String.format(&quot;[%s] at %s logged: [%s] %s\n&quot;, </span>
+<span class="nc" id="L212">                    Thread.currentThread().getName(), LocalDate.now(), level.toUpperCase(), message));</span>
+<span class="nc" id="L213">        }catch(IOException e){</span>
+            //TODO Log Exception
+<span class="nc" id="L215">            throw new RuntimeException(e);</span>
+<span class="nc" id="L216">        }</span>
+<span class="nc" id="L217">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReimbursementServlet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EnterpriseFoundationsProject</a> &gt; <a href="index.source.html" class="el_package">ultranomics.enterprisefoundationsproject.servlets</a> &gt; <span class="el_source">ReimbursementServlet.java</span></div><h1>ReimbursementServlet.java</h1><pre class="source lang-java linenums">package ultranomics.enterprisefoundationsproject.servlets;
+
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.List;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import ultranomics.enterprisefoundationsproject.DTOs.ReimbursementDTO;
+import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
+import ultranomics.enterprisefoundationsproject.ErrorReport;
+import ultranomics.enterprisefoundationsproject.datainsertion.NewReimbursementInsertion;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.DataSourceException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.InvalidRequestException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.ResourceNotFoundException;
+import ultranomics.enterprisefoundationsproject.services.ReimbursementService;
+
+public class ReimbursementServlet extends HttpServlet{
+    
+    private final ReimbursementService reimbursementServ;
+    
+<span class="nc" id="L25">    public ReimbursementServlet(ReimbursementService reimbursementServ){</span>
+<span class="nc" id="L26">        this.reimbursementServ = reimbursementServ;</span>
+<span class="nc" id="L27">    }</span>
+
+    //doGet:get owned pending reimbursements (user_ID matches author_id with pending condition),
+    //      get owned reimbursements(user_ID matches author_id),
+    //      get all reimbursements(require not employee),
+    //      get pending reimbursements(require not employee)
+    //TODO complete doGet method
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+<span class="nc" id="L36">        ObjectMapper jsonMapper = new ObjectMapper();</span>
+<span class="nc" id="L37">        resp.setContentType(&quot;application/json&quot;);</span>
+        
+        //HTTPS session (might not exist)
+<span class="nc" id="L40">        HttpSession userSession = req.getSession(false);</span>
+        
+        //Confirm a user is logged in
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if(userSession == null){</span>
+<span class="nc" id="L44">            resp.setStatus(401);</span>
+<span class="nc" id="L45">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(401, &quot;ERROR 401: Authorization Missing&quot;)));</span>
+<span class="nc" id="L46">            return;</span>
+        }
+        
+        //Gathering submitted username to be verified for authorization
+<span class="nc" id="L50">        String usernameSubmission = req.getParameter(&quot;username&quot;);</span>
+<span class="nc" id="L51">        String searchStatus = req.getParameter(&quot;status&quot;);</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if(searchStatus == null){</span>
+<span class="nc" id="L53">            searchStatus = &quot;&quot;;</span>
+        }
+        
+        //userSession set in AuthenticationServlet which sets &quot;authUser&quot; after someone has logged in
+<span class="nc" id="L57">        UserDTO requester = (UserDTO) userSession.getAttribute(&quot;authUser&quot;);</span>
+        
+        //Username verification logic: must either have Role of finance manager or admin  
+        //or authUser must match the username of user requested
+<span class="nc bnc" id="L61" title="All 4 branches missed.">        if(requester.getRole().equals(&quot;employee&quot;) &amp;&amp; !requester.getUsername().equals(usernameSubmission)){</span>
+<span class="nc" id="L62">            resp.setStatus(403);</span>
+<span class="nc" id="L63">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, &quot;ERROR 403: Authorization Insufficent to Access&quot;)));</span>
+<span class="nc" id="L64">            return;</span>
+        }
+        
+        try{
+            //if logic for which doGet method call is needed
+            //get owned pending reimbursements (user_ID matches author_id with pending condition)
+<span class="nc bnc" id="L70" title="All 6 branches missed.">            if(requester.getRole().equals(&quot;employee&quot;) &amp;&amp; requester.getUsername().equals(usernameSubmission) &amp;&amp; searchStatus.equals(&quot;pending&quot;)){</span>
+<span class="nc" id="L71">                List&lt;ReimbursementDTO&gt; ownedReimb = reimbursementServ.getOwnedPendingReimbs(usernameSubmission);</span>
+                //Translates List to json and sends back to server
+<span class="nc" id="L73">                resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));</span>
+<span class="nc" id="L74">            }else</span>
+            //get owned reimbursements(user_ID matches author_id)
+<span class="nc bnc" id="L76" title="All 4 branches missed.">            if(requester.getRole().equals(&quot;employee&quot;) &amp;&amp; requester.getUsername().equals(usernameSubmission)){</span>
+<span class="nc" id="L77">                List&lt;ReimbursementDTO&gt; ownedReimb = reimbursementServ.getOwnedReimbs(usernameSubmission);</span>
+                //Translates List to json and sends back to server
+<span class="nc" id="L79">                resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));</span>
+<span class="nc" id="L80">            }else</span>
+            //get pending reimbursements(require not employee)
+<span class="nc bnc" id="L82" title="All 4 branches missed.">            if(!requester.getRole().equals(&quot;employee&quot;) &amp;&amp; searchStatus.equals(&quot;pending&quot;)){</span>
+<span class="nc" id="L83">                List&lt;ReimbursementDTO&gt; ownedReimb = reimbursementServ.getAllPendingReimbs(usernameSubmission);</span>
+                //Translates List to json and sends back to server
+<span class="nc" id="L85">                resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));</span>
+<span class="nc" id="L86">            }else </span>
+            //get all reimbursements(require not employee)
+<span class="nc bnc" id="L88" title="All 2 branches missed.">            if(!requester.getRole().equals(&quot;employee&quot;)){</span>
+<span class="nc" id="L89">                List&lt;ReimbursementDTO&gt; ownedReimb = reimbursementServ.getAllReimbs(usernameSubmission);</span>
+                //Translates List to json and sends back to server
+<span class="nc" id="L91">                resp.getWriter().write(jsonMapper.writeValueAsString(ownedReimb));</span>
+<span class="nc" id="L92">            }else{</span>
+<span class="nc" id="L93">                throw new InvalidRequestException(&quot;Request format does not match any doGet method&quot;);</span>
+            }
+<span class="nc" id="L95">        }catch(InvalidRequestException e){</span>
+            //TODO add logging based on 9/9 lecture
+<span class="nc" id="L97">            resp.setStatus(400);</span>
+<span class="nc" id="L98">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(400, e.getMessage())));</span>
+<span class="nc" id="L99">        }catch(ResourceNotFoundException e){</span>
+            //TODO add logging based on 9/9 lecture
+<span class="nc" id="L101">            resp.setStatus(404);</span>
+<span class="nc" id="L102">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(404, e.getMessage())));</span>
+<span class="nc" id="L103">        }catch(DataSourceException e){</span>
+            //TODO add logging based on 9/9 lecture
+<span class="nc" id="L105">            resp.setStatus(500);</span>
+<span class="nc" id="L106">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));</span>
+<span class="nc" id="L107">        }</span>
+            
+<span class="nc" id="L109">    }//end of doGet method</span>
+       
+    //doPost:create new reimbursement(author_id to equal sessionID)
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+<span class="nc" id="L114">        ObjectMapper jsonMapper = new ObjectMapper();</span>
+<span class="nc" id="L115">        resp.setContentType(&quot;application/json&quot;);</span>
+        
+        //HTTPS session (might not exist)
+<span class="nc" id="L118">        HttpSession userSession = req.getSession(false);</span>
+        
+        //Confirm user is logged in
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        if(userSession == null){</span>
+<span class="nc" id="L122">            resp.setStatus(401);</span>
+<span class="nc" id="L123">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(401, &quot;ERROR 401: Authorization Missing&quot;)));</span>
+<span class="nc" id="L124">            return;</span>
+        }
+        
+        //userSession set in AuthenticationServlet which sets &quot;authUser&quot; after someone has logged in
+<span class="nc" id="L128">        UserDTO requester = (UserDTO) userSession.getAttribute(&quot;authUser&quot;);</span>
+        
+        //Gathering submitted username to be verified for authorization
+        //String usernameSubmission = req.getParameter(&quot;username&quot;);
+        
+        
+//        if(!usernameSubmission.equals(userSession.getAttribute(&quot;authUser&quot;))){
+//            resp.setStatus(403);
+//            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(403, &quot;ERROR 403: Reimbusement Author does not match logged in user&quot;)));
+//            return;
+//        }
+        
+        try{
+            //Servlet layer new Reimbursement creation
+            //reimbursementServ.register is passed reimbusement to insert, will return with 
+            //ResourceCreationDTO to confirm new User was created
+<span class="nc" id="L144">            NewReimbursementInsertion requestBody = jsonMapper.readValue(req.getInputStream(), NewReimbursementInsertion.class);</span>
+            //setting Auth_ID to match sesssion so that no one can submit impersonated reimbursement requests
+<span class="nc" id="L146">            requestBody.setAuthorID(requester.getUsername());</span>
+<span class="nc" id="L147">            ReimbursementDTO responseBody = reimbursementServ.generate(requestBody);</span>
+<span class="nc" id="L148">            resp.getWriter().write(jsonMapper.writeValueAsString(responseBody));</span>
+            
+<span class="nc" id="L150">        } catch (InvalidRequestException | JsonMappingException e) {</span>
+            //TODO add logging based on 9/9 lecture
+<span class="nc" id="L152">            resp.setStatus(400); // BAD REQUEST</span>
+<span class="nc" id="L153">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(400, e.getMessage())));</span>
+
+<span class="nc" id="L155">        } catch (DataSourceException e) {</span>
+            //TODO add logging based on 9/9 lecture
+<span class="nc" id="L157">            resp.setStatus(500); // INTERNAL SERVER ERROR; general error indicating a problem with the server</span>
+<span class="nc" id="L158">            resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorReport(500, e.getMessage())));</span>
+
+<span class="nc" id="L160">        }</span>
+<span class="nc" id="L161">    }//end of doPost method</span>
+    
+    //doPut:approve/deny single reimbursement(requires Finance Manager/Admin and the ReimbID)
+    //      update owned reimbursement (owned and still pending)  
+    //TODO complete doPut method
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+<span class="nc" id="L168">        ObjectMapper jsonMapper = new ObjectMapper();</span>
+<span class="nc" id="L169">        resp.setContentType(&quot;application/json&quot;);</span>
+<span class="nc" id="L170">    }//end of doPut method</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EnterpriseFoundationsProject</a> &gt; <a href="index.source.html" class="el_package">ultranomics.enterprisefoundationsproject.services</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package ultranomics.enterprisefoundationsproject.services;
+
+import java.util.ArrayList;
+import java.util.List;
+import ultranomics.enterprisefoundationsproject.DAOs.UserDAO;
+import ultranomics.enterprisefoundationsproject.DTOs.UserDTO;
+import ultranomics.enterprisefoundationsproject.datainsertion.NewUserInsertion;
+import ultranomics.enterprisefoundationsproject.datamodels.User;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.InvalidRequestException;
+import ultranomics.enterprisefoundationsproject.exceptiontemplates.ResourcePersistenceException;
+
+public class UserService {
+    private final UserDAO userDAO;
+
+<span class="nc" id="L15">    public UserService(UserDAO userDAO) {</span>
+<span class="nc" id="L16">        this.userDAO = userDAO;</span>
+<span class="nc" id="L17">    }</span>
+    
+    public List&lt;UserDTO&gt; getAllUsers(){
+<span class="nc" id="L20">        List&lt;UserDTO&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L21">        List&lt;User&gt; users = userDAO.getAllUsers();</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">        for (User user : users) {</span>
+<span class="nc" id="L23">            result.add(new UserDTO(user));</span>
+<span class="nc" id="L24">        }</span>
+<span class="nc" id="L25">        return result;</span>
+    }
+
+    public UserDTO getUserByUsername(String usernameImport) throws InvalidRequestException{
+        //filter invalid usernames
+<span class="nc bnc" id="L30" title="All 4 branches missed.">        if(usernameImport == null || usernameImport.length() == 0){</span>
+<span class="nc" id="L31">            throw new InvalidRequestException(</span>
+                    &quot;ERROR: submitted Username is null&quot;+
+                    &quot; or empty and can not be looked up&quot;);
+        }
+        
+        try{
+<span class="nc" id="L37">            User target = userDAO.findUserByUsername(usernameImport).orElse(null); </span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">            if (target == null){</span>
+<span class="nc" id="L39">                throw new IllegalArgumentException(&quot;ERROR: Username not found&quot;);</span>
+            }
+            
+<span class="nc" id="L42">            UserDTO result = new UserDTO(target);</span>
+<span class="nc" id="L43">            return result;</span>
+<span class="nc" id="L44">        }catch(IllegalArgumentException e){</span>
+<span class="nc" id="L45">            throw new InvalidRequestException(&quot;ERROR: searched username was not found&quot;);</span>
+        }
+    }
+    
+    public UserDTO register(NewUserInsertion newUser) throws InvalidRequestException, ResourcePersistenceException{
+        //logic for checking first/last name, email, username, and password
+        //are present and meet formatting requirements
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if(newUser == null){</span>
+<span class="nc" id="L53">            throw new InvalidRequestException(&quot;ERROR: can not register null payload&quot;);</span>
+        }
+<span class="nc bnc" id="L55" title="All 4 branches missed.">        if(newUser.getGivenName() == null || newUser.getGivenName().equals(&quot;&quot;)){</span>
+<span class="nc" id="L56">            throw new InvalidRequestException(&quot;ERROR: no first name provided&quot;);</span>
+        }
+<span class="nc bnc" id="L58" title="All 4 branches missed.">        if(newUser.getSurname() == null || newUser.getSurname().equals(&quot;&quot;)){</span>
+<span class="nc" id="L59">            throw new InvalidRequestException(&quot;ERROR: no last name provided&quot;);</span>
+        }
+<span class="nc bnc" id="L61" title="All 4 branches missed.">        if(newUser.getEmail() == null || newUser.getEmail().equals(&quot;&quot;)){</span>
+<span class="nc" id="L62">            throw new InvalidRequestException(&quot;ERROR: no email provided&quot;);</span>
+        }
+<span class="nc bnc" id="L64" title="All 4 branches missed.">        if(newUser.getUsername() == null || newUser.getUsername().equals(&quot;&quot;)){</span>
+<span class="nc" id="L65">            throw new InvalidRequestException(&quot;ERROR: no username provided&quot;);</span>
+        }
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if(newUser.getPassword() == null || newUser.getPassword().equals(&quot;&quot;)){</span>
+<span class="nc" id="L68">            throw new InvalidRequestException(&quot;ERROR: no password provided&quot;);</span>
+        }
+        
+        //logic for checking Username and Email are unique before passing to database
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if(userDAO.isUsernameTaken(newUser.getUsername())){</span>
+<span class="nc" id="L73">            throw new ResourcePersistenceException(&quot;ERROR: Username is already taken&quot;);</span>
+        }
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if(userDAO.isEmailTaken(newUser.getEmail())){</span>
+<span class="nc" id="L76">            throw new ResourcePersistenceException(&quot;ERROR: Email address has already been used&quot;);</span>
+        }
+        
+<span class="nc" id="L79">        User target = userDAO.createUser(newUser).orElse(null);</span>
+<span class="nc" id="L80">        UserDTO result = new UserDTO(target);</span>
+<span class="nc" id="L81">        return result;</span>
+    }
+    
+    //TODO add updateUser method
+    
+    
+    public UserDTO deactivate(String usernameImport){
+<span class="nc" id="L88">        User target = userDAO.deactivateUser(usernameImport).orElse(null);</span>
+<span class="nc" id="L89">        UserDTO result = new UserDTO(target);</span>
+        
+<span class="nc" id="L91">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -61,13 +61,27 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
                 <configuration>
-                    <forkMode>always</forkMode>
+                    <reuseForks>true</reuseForks>
+                    <forkCount>3</forkCount>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.7.201606060606</version>
+                <version>0.8.7</version>
+                <configuration>
+                    <excludes>
+                        <exclude>src/main/java/ultranomics/enterprisefoundationsproject/DAOs/*</exclude>
+                        <exclude>src/main/java/ultranomics/enterprisefoundationsproject/DTOs/*</exclude>
+                        <exclude>src/main/java/ultranomics/enterprisefoundationsproject/datainsertion/*</exclude>
+                        <exclude>src/main/java/ultranomics/enterprisefoundationsproject/datamodels/*</exclude>
+                        <exclude>src/main/java/ultranomics/enterprisefoundationsproject/datasource/*</exclude>
+                        <exclude>src/main/java/ultranomics/enterprisefoundationsproject/exceptiontemplates/*</exclude>
+                        <exclude>src/main/java/ultranomics/enterprisefoundationsproject/servlets/*</exclude>
+                        <exclude>src/main/java/ultranomics/enterprisefoundationsproject/EnterpriseFoundationMain</exclude>
+                        <exclude>src/main/java/ultranomics/enterprisefoundationsproject/ErrorReport</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>

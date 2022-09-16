@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NewUserInsertion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EnterpriseFoundationsProject</a> &gt; <a href="index.source.html" class="el_package">ultranomics.enterprisefoundationsproject.datainsertion</a> &gt; <span class="el_source">NewUserInsertion.java</span></div><h1>NewUserInsertion.java</h1><pre class="source lang-java linenums">package ultranomics.enterprisefoundationsproject.datainsertion;
+
+import ultranomics.enterprisefoundationsproject.datamodels.Request;
+import ultranomics.enterprisefoundationsproject.datamodels.User;
+
+<span class="nc" id="L6">public class NewUserInsertion implements Request&lt;User&gt;{</span>
+
+    private String givenName;
+    private String surname;
+    private String email;
+    private String username;
+    private String password;
+    private String role;
+    
+    //getters and setters
+    public String getGivenName() {
+<span class="nc" id="L17">        return givenName;</span>
+    }
+
+    public void setGivenName(String givenName) {
+<span class="nc" id="L21">        this.givenName = givenName;</span>
+<span class="nc" id="L22">    }</span>
+
+    public String getSurname() {
+<span class="nc" id="L25">        return surname;</span>
+    }
+
+    public void setSurname(String surname) {
+<span class="nc" id="L29">        this.surname = surname;</span>
+<span class="nc" id="L30">    }</span>
+
+    public String getEmail() {
+<span class="nc" id="L33">        return email;</span>
+    }
+
+    public void setEmail(String email) {
+<span class="nc" id="L37">        this.email = email;</span>
+<span class="nc" id="L38">    }</span>
+
+    public String getUsername() {
+<span class="nc" id="L41">        return username;</span>
+    }
+
+    public void setUsername(String username) {
+<span class="nc" id="L45">        this.username = username;</span>
+<span class="nc" id="L46">    }</span>
+
+    public String getPassword() {
+<span class="nc" id="L49">        return password;</span>
+    }
+
+    public void setPassword(String password) {
+<span class="nc" id="L53">        this.password = password;</span>
+<span class="nc" id="L54">    }    </span>
+    
+    public String getRole() {
+<span class="nc" id="L57">        return role;</span>
+    }
+
+    public void setRole(String role) {
+<span class="nc" id="L61">        this.role = role;</span>
+<span class="nc" id="L62">    }</span>
+    
+    @Override
+    public String toString() {
+<span class="nc" id="L66">        return &quot;NewUserInsertion{ &quot; + </span>
+                &quot;givenName=&quot; + givenName + 
+                &quot;, \nsurname=&quot; + surname + 
+                &quot;, \nemail=&quot; + email + 
+                &quot;, \nusername=&quot; + username + 
+                &quot;, \npassword=&quot; + password + '}';
+    }
+    
+    @Override 
+    public User extractEntity(){
+<span class="nc" id="L76">       User extractedEntity = new User();</span>
+<span class="nc" id="L77">       extractedEntity.setGivenName(this.givenName);</span>
+<span class="nc" id="L78">       extractedEntity.setSurname(this.surname);</span>
+<span class="nc" id="L79">       extractedEntity.setEmail(this.email);</span>
+<span class="nc" id="L80">       extractedEntity.setUsername(this.username);</span>
+<span class="nc" id="L81">       extractedEntity.setPassword(this.password);</span>
+<span class="nc" id="L82">       extractedEntity.setRole(this.role);</span>
+       
+<span class="nc" id="L84">       return extractedEntity;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EnterpriseFoundationMain.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EnterpriseFoundationsProject</a> &gt; <a href="index.source.html" class="el_package">ultranomics.enterprisefoundationsproject</a> &gt; <span class="el_source">EnterpriseFoundationMain.java</span></div><h1>EnterpriseFoundationMain.java</h1><pre class="source lang-java linenums">
+package ultranomics.enterprisefoundationsproject;
+
+import ultranomics.enterprisefoundationsproject.DAOs.*;
+import ultranomics.enterprisefoundationsproject.services.*;
+import ultranomics.enterprisefoundationsproject.servlets.*;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.startup.Tomcat;
+
+
+<span class="nc" id="L11">public class EnterpriseFoundationMain {</span>
+    public static void main(String[] args) throws LifecycleException{
+<span class="nc" id="L13">        String docBase = System.getProperty(&quot;java.io.tmpdir&quot;);</span>
+        
+        //Creating webServer
+<span class="nc" id="L16">        Tomcat webServer = new Tomcat();</span>
+<span class="nc" id="L17">        webServer.setBaseDir(docBase);</span>
+<span class="nc" id="L18">        webServer.setPort(5000); //default is 8080</span>
+<span class="nc" id="L19">        webServer.getConnector(); //formality, connects server requests to application</span>
+        
+        //Creating Data Access Objects (DAOs)
+<span class="nc" id="L22">        UserDAO userDAO = new UserDAO();</span>
+<span class="nc" id="L23">        ReimbursementDAO reimbursementDAO = new ReimbursementDAO();</span>
+        
+        //Service methods
+<span class="nc" id="L26">        UserService userServ = new UserService(userDAO);</span>
+<span class="nc" id="L27">        AuthenticationService authServ = new AuthenticationService(userDAO);</span>
+<span class="nc" id="L28">        ReimbursementService reimbServ = new ReimbursementService(reimbursementDAO);</span>
+        
+        //Connecting Servlets to Service layer
+<span class="nc" id="L31">        UserServlet userSlet = new UserServlet(userServ);</span>
+<span class="nc" id="L32">        AuthenticationServlet authSlet = new AuthenticationServlet(authServ);</span>
+<span class="nc" id="L33">        ReimbursementServlet reimbSlet = new ReimbursementServlet(reimbServ);</span>
+        
+        //Connecting Servlets to webServer
+<span class="nc" id="L36">        final String rootContext = &quot;/p1&quot;;</span>
+<span class="nc" id="L37">        webServer.addContext(rootContext, docBase);</span>
+<span class="nc" id="L38">        webServer.addServlet(rootContext, &quot;UserServlet&quot;, userSlet).addMapping(&quot;/users&quot;);</span>
+<span class="nc" id="L39">        webServer.addServlet(rootContext, &quot;AuthenticationServlet&quot;, authSlet).addMapping(&quot;/authentication&quot;);</span>
+<span class="nc" id="L40">        webServer.addServlet(rootContext, &quot;ReimbursementServlet&quot;, reimbSlet).addMapping(&quot;/reimbursements&quot;);</span>
+        
+        
+<span class="nc" id="L43">        webServer.start();</span>
+<span class="nc" id="L44">        webServer.getServer().await();</span>
+<span class="nc" id="L45">        System.out.println(&quot;Web application started successfully&quot;);</span>
+<span class="nc" id="L46">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
