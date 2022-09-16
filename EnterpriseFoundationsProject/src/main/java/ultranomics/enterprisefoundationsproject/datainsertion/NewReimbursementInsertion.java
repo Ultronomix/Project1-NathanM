@@ -9,8 +9,8 @@ public class NewReimbursementInsertion implements Request<Reimbursement>{
     private double amount;
     private String timeSub;
     private String description;
-    private String authorID;
-    private String statusID = "1";
+    private int authorID;
+    private String statusID;
     private String typeID;
 
     //getters and setters
@@ -25,7 +25,7 @@ public class NewReimbursementInsertion implements Request<Reimbursement>{
     public String getTimeSub() {
         return timeSub;
     }
-
+    
     public void setTimeSub(String timeSub) {
         this.timeSub = timeSub;
     }
@@ -38,11 +38,11 @@ public class NewReimbursementInsertion implements Request<Reimbursement>{
         this.description = description;
     }
 
-    public String getAuthorID() {
+    public int getAuthorID() {
         return authorID;
     }
 
-    public void setAuthorID(String authorID) {
+    public void setAuthorID(int authorID) {
         this.authorID = authorID;
     }
 
