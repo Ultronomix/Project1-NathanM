@@ -1,0 +1,7 @@
+Before Deployment:
+-users to be activated by admins
+-restrictions based on active status
+-logging + testing
+
+Other Future Goals:
+-join result tables to display roles, statuses, types, and names by value and not ID number
