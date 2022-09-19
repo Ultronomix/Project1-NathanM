@@ -9,7 +9,7 @@ public class ReimbursementDTO {
     private String timeResolved;
     private String description;
     private int authorID;
-    private String resolverID;
+    private int resolverID;
     private String statusID;
     private String typeID;    
 
@@ -80,11 +80,11 @@ public class ReimbursementDTO {
         this.authorID = authorID;
     }
 
-    public String getResolverID() {
+    public int getResolverID() {
         return resolverID;
     }
 
-    public void setResolverID(String resolverID) {
+    public void setResolverID(int resolverID) {
         this.resolverID = resolverID;
     }
 

@@ -211,8 +211,10 @@ public class ReimbursementServlet extends HttpServlet{
         
         
         try{
+            int resolver = requester.getUserID();
+            
             ReimbursementApproveOrDenyAlteration requestBody = jsonMapper.readValue(req.getInputStream(), ReimbursementApproveOrDenyAlteration.class);
-            ReimbursementDTO responseBody = reimbursementServ.updateStatusApproveOrDeny(requestBody);
+            ReimbursementDTO responseBody = reimbursementServ.updateStatusApproveOrDeny(requestBody, resolver);
             resp.getWriter().write(jsonMapper.writeValueAsString(responseBody));
             
             

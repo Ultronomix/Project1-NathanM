@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,8 @@ public class ReimbursementDAO {
             reimbursement.setAuthorID(rs.getInt("AUTHOR_ID"));
             reimbursement.setStatusID(rs.getString("STATUS_ID"));
             reimbursement.setTypeID(rs.getString("TYPE_ID"));
+            reimbursement.setTimeResolved(rs.getString("RESOLVED"));
+            reimbursement.setResolverID(rs.getInt("RESOLVER_ID"));
             
             reimbursements.add(reimbursement);
         }
@@ -184,8 +188,8 @@ public class ReimbursementDAO {
          
     }//end of getSingleByReimbID
     
-    public Optional<Reimbursement> updateReimbursementStatus(int reimbIDImport, boolean newStatusImport){
-        String sql = "UPDATE ers_reimbursements SET status_id = ? WHERE reimb_id = ? "; 
+    public Optional<Reimbursement> updateReimbursementStatus(int reimbIDImport, boolean newStatusImport, int resolverIDImport){
+        String sql = "UPDATE ers_reimbursements SET status_id = ?, RESOLVER_ID  = ?, RESOLVED = TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS') WHERE reimb_id = ?"; 
         String sql02 = "WHERE reimb_id = ? ";
         
         try(Connection conn = ConnectionFactory.getInstance().getConnection()){
@@ -200,7 +204,9 @@ public class ReimbursementDAO {
             //updating the database
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, statusUpdate);
-            pstmt.setInt(2, reimbIDImport);
+            pstmt.setInt(2, resolverIDImport);
+            pstmt.setString(3, Timestamp.valueOf(LocalDateTime.now()).toString());
+            pstmt.setInt(4, reimbIDImport);
             pstmt.executeUpdate();
             
             //prepping query to confirm update

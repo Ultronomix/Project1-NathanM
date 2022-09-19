@@ -102,9 +102,12 @@ public class ReimbursementService {
         }
     }//end of getIdentifiedReimb
     
-    public ReimbursementDTO updateStatusApproveOrDeny (ReimbursementApproveOrDenyAlteration alterationImport){
+    public ReimbursementDTO updateStatusApproveOrDeny (ReimbursementApproveOrDenyAlteration alterationImport, int resolverIDImport){
         if(alterationImport == null){
             throw new InvalidRequestException("ERROR: can not update with null payload");
+        }
+        if(resolverIDImport <=0 ){
+            throw new InvalidRequestException("ERROR: Resolver ID not recognized");
         }
         
         try{
@@ -117,7 +120,7 @@ public class ReimbursementService {
             }else if (!target.getStatusID().equals("1")){//can only update a reimbursement that is in pending status
                 throw new InvalidRequestException("ERROR: Reimbursement is not pending approval / rejection");
             }else{
-                target = reimbursementDAO.updateReimbursementStatus(alterationImport.getReimbursementID(), alterationImport.getStatusUpdate()).orElse(null);
+                target = reimbursementDAO.updateReimbursementStatus(alterationImport.getReimbursementID(), alterationImport.getStatusUpdate(), resolverIDImport).orElse(null);
             }
             
             
